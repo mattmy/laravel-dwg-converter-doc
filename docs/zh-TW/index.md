@@ -22,6 +22,5 @@ features:
     details: 縮圖、圖片預覽、DXF 與結構 JSON 都明確說明實際限制。
 ---
 
-本文件說明尚未正式發行的 `mattmy/laravel-dwg-converter`。請先閱讀
-[系統需求與第一次轉換](/zh-TW/guide/getting-started)，或直接確認各操作需要哪些
+請先閱讀[系統需求與第一次轉換](/zh-TW/guide/getting-started)，或直接確認各操作需要哪些
 [外部 commands](/zh-TW/guide/external-tools)。

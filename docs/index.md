@@ -22,6 +22,5 @@ features:
     details: Thumbnail extraction, image previews, DXF, and structural JSON each document their real limits.
 ---
 
-This documentation covers the unreleased `mattmy/laravel-dwg-converter` package. Start with the
-[requirements and first conversion](/guide/getting-started), or check exactly which
+Start with the [requirements and first conversion](/guide/getting-started), or check exactly which
 [external commands](/guide/external-tools) your operation needs.

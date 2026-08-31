@@ -3,8 +3,6 @@
 Laravel DWG Converter 讓 Laravel 應用擷取 DWG 內嵌縮圖，或將檔案輸出為 DXF、結構 JSON、PNG、
 JPEG 或 WebP。你只需安裝實際會呼叫之操作所需的外部 commands。
 
-> 本套件目前尚未正式發行。Composer 安裝方式適用於套件發布至 Packagist 之後。
-
 ## 系統需求
 
 | 需求 | 支援範圍 |
@@ -27,7 +25,7 @@ ImageMagick。
 
 ## 安裝
 
-套件發布後，可透過 Composer 安裝：
+透過 Composer 安裝套件：
 
 ```bash
 composer require mattmy/laravel-dwg-converter

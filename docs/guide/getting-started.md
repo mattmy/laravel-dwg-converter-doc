@@ -4,8 +4,6 @@ Laravel DWG Converter lets a Laravel application extract a DWG's embedded thumbn
 DXF, structural JSON, PNG, JPEG, or WebP. Install only the external commands required by the operation you
 intend to call.
 
-> The package is currently unreleased. Composer installation applies after it is published on Packagist.
-
 ## Requirements
 
 | Requirement | Supported |
@@ -28,7 +26,7 @@ for thumbnail, DXF, or JSON operations.
 
 ## Installation
 
-Once published, install the package with Composer:
+Install the package with Composer:
 
 ```bash
 composer require mattmy/laravel-dwg-converter
