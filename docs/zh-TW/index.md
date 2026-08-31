@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Laravel DWG Converter
   text: Laravel 的 DWG 轉換套件
-  tagline: 明確揭露外部工具需求，擷取縮圖並輸出 DXF、結構 JSON、PNG、JPEG 或 WebP。
+  tagline: 擷取 DWG 縮圖，並輸出 DXF、結構 JSON、PNG、JPEG 或 WebP。
   actions:
     - theme: brand
       text: 開始使用

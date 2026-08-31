@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Laravel DWG Converter
   text: DWG conversion for Laravel
-  tagline: Extract thumbnails and export DXF, structural JSON, PNG, JPEG, or WebP with explicit external-tool requirements.
+  tagline: Extract DWG thumbnails and export DXF, structural JSON, PNG, JPEG, or WebP.
   actions:
     - theme: brand
       text: Get started

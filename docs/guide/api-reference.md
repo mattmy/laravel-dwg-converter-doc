@@ -1,7 +1,6 @@
 # API reference
 
-This page lists application-facing APIs. Follow the linked guides for complete behavior and external-tool
-requirements.
+This page lists application-facing APIs. Follow the linked guides for operation details and setup.
 
 ## Facade operations
 

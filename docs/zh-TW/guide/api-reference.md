@@ -1,6 +1,6 @@
 # API 參考
 
-本頁只列出 application-facing API。完整行為與外部工具需求請閱讀對應指南。
+本頁只列出 application-facing API。操作細節與安裝方式請閱讀對應指南。
 
 ## Facade operations
 
