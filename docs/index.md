@@ -14,12 +14,12 @@ hero:
       link: /guide/external-tools
 
 features:
-  - title: Install only what you use
-    details: Each operation checks only its own LibreDWG, LibreOffice, or ImageMagick commands.
-  - title: Laravel-native delivery
-    details: Accept uploads, paths, or bytes and stream one-time outputs to Laravel Storage.
-  - title: Honest output contracts
-    details: Thumbnail extraction, image previews, DXF, and structural JSON each document their real limits.
+  - title: Extract thumbnails
+    details: Read embedded previews from DWG files.
+  - title: Convert DWG files
+    details: Export DXF, structural JSON, PNG, JPEG, or WebP.
+  - title: Built for Laravel
+    details: Accept uploads, paths, or bytes and store or stream results with Laravel Storage.
 ---
 
 Start with the [requirements and first conversion](/guide/getting-started), or check exactly which

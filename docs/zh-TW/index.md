@@ -14,12 +14,12 @@ hero:
       link: /zh-TW/guide/external-tools
 
 features:
-  - title: 只安裝會用到的工具
-    details: 每個操作只檢查自己需要的 LibreDWG、LibreOffice 或 ImageMagick commands。
-  - title: Laravel 原生交付方式
-    details: 接受上傳、path 或 bytes，並將一次性輸出串流至 Laravel Storage。
-  - title: 誠實的輸出契約
-    details: 縮圖、圖片預覽、DXF 與結構 JSON 都明確說明實際限制。
+  - title: 擷取縮圖
+    details: 讀取 DWG 檔案內嵌的預覽。
+  - title: 轉換 DWG
+    details: 輸出 DXF、結構 JSON、PNG、JPEG 或 WebP。
+  - title: 為 Laravel 打造
+    details: 接受上傳、path 或 bytes，並透過 Laravel Storage 儲存或串流結果。
 ---
 
 請先閱讀[系統需求與第一次轉換](/zh-TW/guide/getting-started)，或直接確認各操作需要哪些
