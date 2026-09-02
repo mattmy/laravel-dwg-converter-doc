@@ -32,5 +32,5 @@ $dxf = Dwg::toDxf($request->file('drawing'))
 
 ## 結果契約
 
-結果副檔名為 `dxf`，MIME type 為 `application/dxf`。套件會確認產物是非空的 ASCII DXF，並具有
+結果副檔名為 `dxf`，MIME type 為 `image/vnd.dxf`。套件會確認產物是非空的 ASCII DXF，並具有
 必要 section 與結尾標記，但無法保證所有 DWG objects 都被保留，或每個 CAD 應用顯示完全相同。

@@ -32,6 +32,6 @@ Supported cases are `R12`, `R14`, `R2000`, `R2004`, `R2007`, `R2010`, `R2013`, a
 
 ## Result contract
 
-The result reports extension `dxf` and MIME type `application/dxf`. The package checks for a non-empty ASCII
+The result reports extension `dxf` and MIME type `image/vnd.dxf`. The package checks for a non-empty ASCII
 DXF with the required section and end markers, but that check does not guarantee every DWG object was
 preserved or that every CAD application will display the file identically.
