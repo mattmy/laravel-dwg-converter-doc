@@ -55,5 +55,6 @@ preview is required.
 
 ## Storage failure
 
-The filename must be a basename with the output's real extension. A failed `storeAs()` still consumes the
-output and cleans its temporary artifact; run the conversion again before retrying delivery.
+An explicit filename must be a safe basename. The package appends or normalizes the trusted output extension.
+A failed `storeAs()` still consumes the output and cleans its temporary artifact; run the conversion again
+before retrying delivery.

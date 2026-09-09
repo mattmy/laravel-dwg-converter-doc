@@ -72,10 +72,14 @@ Wraps raw bytes so a string is not mistaken for a local path.
 extension(): string
 mimeType(): string
 output(): string
-storeAs(string $path, string $name, ?string $disk = null): string
+storeAs(string $path, ?string $name = null, ?string $disk = null): string
 ```
 
 `extension()` and `mimeType()` do not consume the result. Call exactly one of `output()` or `storeAs()`.
+An explicit safe basename retains its text; the trusted extension is appended if different and normalized when
+it differs only by case. Without `name`, local paths and uploads use their filename stem, while `DwgBinary`
+uses `converted-{16 lowercase hex}`. For WebP, `test1.webp` stays `test1.webp`, `test1.png` becomes
+`test1.png.webp`, and `test1.WEBP` becomes `test1.webp`.
 
 ## Exceptions
 

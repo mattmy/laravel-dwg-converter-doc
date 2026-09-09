@@ -70,10 +70,14 @@ $binary->contents(): string
 extension(): string
 mimeType(): string
 output(): string
-storeAs(string $path, string $name, ?string $disk = null): string
+storeAs(string $path, ?string $name = null, ?string $disk = null): string
 ```
 
 `extension()` 與 `mimeType()` 不會消費結果。`output()` 與 `storeAs()` 只能選擇一個呼叫一次。
+明確提供安全 basename 時會保留檔名文字；可信副檔名不同時附加，僅大小寫不同時正規化。未提供
+`name` 時，本機路徑與上傳檔案使用其檔名 stem，`DwgBinary` 使用 `converted-{16 lowercase hex}`。WebP 的
+`test1.webp` 維持 `test1.webp`、`test1.png` 變成 `test1.png.webp`，`test1.WEBP` 變成
+`test1.webp`。
 
 ## Exceptions
 

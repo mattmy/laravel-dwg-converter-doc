@@ -58,6 +58,8 @@ $path = $result->storeAs('drawings', 'floor-plan.dxf', 's3');
 $bytes = $result->output();
 ```
 
-`storeAs()` 會串流至 Laravel Storage。目的檔名必須是 basename，而且副檔名需符合 `extension()`。
-`output()` 會將完整產物載入 PHP 記憶體。無論交付成功或失敗，terminal method 都會清理暫存產物；
-再次使用同一結果會拋出 `LogicException`。
+`storeAs()` 會串流至 Laravel Storage。可省略的目的檔名必須是安全 basename。明確提供時，套件會
+保留檔名；可信 `extension()` 不同時附加，僅大小寫不同時正規化。未提供檔名時，本機路徑與上傳檔案
+使用來源 stem；`DwgBinary` 使用隨機的 `converted-{16 lowercase hex}` stem。`output()` 會將完整產物載入 PHP
+記憶體。無論交付成功或失敗，terminal method 都會清理暫存產物；再次使用同一結果會拋出
+`LogicException`。

@@ -19,12 +19,11 @@ $mimeType = $thumbnail->mimeType();
 
 ## 儲存縮圖
 
-目的檔名必須使用偵測到的副檔名：
+檔名可省略；可信的偵測副檔名會自動套用：
 
 ```php
 $path = $thumbnail->storeAs(
     path: 'drawing-thumbnails',
-    name: 'floor-plan.'.$thumbnail->extension(),
     disk: 's3',
 );
 ```

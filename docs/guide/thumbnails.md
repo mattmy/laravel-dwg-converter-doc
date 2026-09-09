@@ -19,12 +19,11 @@ The extension and MIME type come from the output bytes, not the filename supplie
 
 ## Store the thumbnail
 
-Use the detected extension in the destination filename:
+The name is optional. The trusted detected extension is applied automatically:
 
 ```php
 $path = $thumbnail->storeAs(
     path: 'drawing-thumbnails',
-    name: 'floor-plan.'.$thumbnail->extension(),
     disk: 's3',
 );
 ```

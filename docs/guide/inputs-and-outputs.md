@@ -58,6 +58,8 @@ or:
 $bytes = $result->output();
 ```
 
-`storeAs()` streams to Laravel Storage. The destination name must be a basename whose extension matches
-`extension()`. `output()` loads the complete artifact into PHP memory. Either terminal method cleans up the
-temporary artifact even if delivery fails; using it again throws `LogicException`.
+`storeAs()` streams to Laravel Storage. Its optional destination name must be a safe basename. The package
+preserves an explicit name, appending the trusted `extension()` when different and canonicalizing it when only
+the case differs. Without a name, local paths and uploads use their source stem; `DwgBinary` uses a random
+`converted-{16 lowercase hex}` stem. `output()` loads the complete artifact into PHP memory. Either terminal method
+cleans up the temporary artifact even if delivery fails; using it again throws `LogicException`.
