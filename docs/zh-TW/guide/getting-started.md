@@ -7,9 +7,11 @@ JPEG 或 WebP。你只需安裝實際會呼叫之操作所需的外部 commands�
 
 | 需求 | 支援範圍 |
 |---|---|
-| PHP | 8.3 或更新版本 |
+| PHP | 8.2 或更新版本 |
 | Laravel | 12 或 13 |
-| CI 實測 | PHP 8.3–8.5 搭配 Laravel 12–13，包含 PHP 8.3／Laravel 12 lowest boundary |
+| CI 實測 | PHP 8.2 搭配 Laravel 12；PHP 8.3–8.5 搭配 Laravel 12–13，包含 PHP 8.2／Laravel 12 lowest 與 current boundary |
+
+Laravel 13 需要 PHP 8.3 或更新版本。
 
 每個操作有不同的外部需求：
 

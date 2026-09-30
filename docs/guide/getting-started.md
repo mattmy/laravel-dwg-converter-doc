@@ -8,9 +8,11 @@ intend to call.
 
 | Requirement | Supported |
 |---|---|
-| PHP | 8.3 or later |
+| PHP | 8.2 or later |
 | Laravel | 12 or 13 |
-| CI tested | PHP 8.3–8.5 with Laravel 12–13, including the PHP 8.3 / Laravel 12 lowest boundary |
+| CI tested | PHP 8.2 with Laravel 12; PHP 8.3–8.5 with Laravel 12–13, including PHP 8.2 / Laravel 12 lowest and current boundaries |
+
+Laravel 13 requires PHP 8.3 or later.
 
 Each operation has separate external requirements:
 
