@@ -43,5 +43,10 @@ consumers before making compatibility or performance promises.
 
 ## Logging and privacy
 
+When temporary cleanup fails, the package tries to log one `warning` through Laravel's default logger.
+The diagnostic details exclude paths, filenames, file contents, raw exception messages, and stack traces.
+If logging is unavailable, the warning may not be saved. See [cleanup warnings](./errors-and-troubleshooting#temporary-cleanup-warning)
+for troubleshooting and how cleanup failures affect your operation.
+
 Do not log source bytes, complete JSON, user filenames, or server paths. Public exceptions expose sanitized
 context, but application logs should still follow your data-retention and access policies.

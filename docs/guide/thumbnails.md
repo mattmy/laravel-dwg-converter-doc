@@ -17,6 +17,15 @@ $mimeType = $thumbnail->mimeType();
 
 The extension and MIME type come from the output bytes, not the filename supplied by LibreDWG.
 
+## Validation boundary
+
+The package checks the basic structure of BMP, PNG, and WMF previews. A preview that fails these checks
+throws `DwgOperationFailed` with reason `thumbnail_invalid`.
+
+The preview is returned unchanged, without repairs or re-encoding. These are basic format checks, not a full
+image decode, so a successful result is not a guarantee that every image viewer can open it. No additional
+image decoder is needed.
+
 ## Store the thumbnail
 
 The name is optional. The trusted detected extension is applied automatically:

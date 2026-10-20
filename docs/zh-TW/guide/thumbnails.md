@@ -17,6 +17,14 @@ $mimeType = $thumbnail->mimeType();
 
 副檔名與 MIME type 依輸出 bytes 判定，不信任 LibreDWG 產生的檔名。
 
+## 驗證邊界
+
+套件會檢查 BMP、PNG、WMF 預覽的基本結構。沒有通過檢查時，會拋出 `DwgOperationFailed`，
+原因為 `thumbnail_invalid`。
+
+縮圖會原樣回傳，不會修補或重新編碼。這些只是基本格式檢查，不會完整解碼圖片，因此即使擷取成功，
+也不保證每個圖片檢視器都能開啟結果。這項功能不需要額外安裝圖片解碼工具。
+
 ## 儲存縮圖
 
 檔名可省略；可信的偵測副檔名會自動套用：

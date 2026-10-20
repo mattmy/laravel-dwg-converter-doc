@@ -73,9 +73,13 @@ output(): string
 storeAs(string $path, ?string $name = null, ?string $disk = null): string
 ```
 
-`extension()` 與 `mimeType()` 不會消費結果。`output()` 與 `storeAs()` 只能選擇一個呼叫一次。
-明確提供安全 basename 時會保留檔名文字；可信副檔名不同時附加，僅大小寫不同時正規化。未提供
-`name` 時，本機路徑與上傳檔案使用其檔名 stem，`DwgBinary` 使用 `converted-{16 lowercase hex}`。WebP 的
+`extension()` 與 `mimeType()` 可以重複讀取。每個結果只能選擇 `output()` 或 `storeAs()` 呼叫一次，
+即使失敗也不能重試；需要重試時，請重新執行轉換。複製、序列化或反序列化 `DwgOutput` 都會拋出
+`LogicException`。
+
+`storeAs()` 會保留你提供的檔名，再視需要加上輸出格式的副檔名；副檔名已相同時，只會統一大小寫。
+省略 `name` 時，本機檔案與上傳檔案會沿用去掉副檔名後的名稱。如果名稱不安全或沒有名稱
+（例如 `DwgBinary`），就使用 `converted-{16 lowercase hex}`。WebP 的
 `test1.webp` 維持 `test1.webp`、`test1.png` 變成 `test1.png.webp`，`test1.WEBP` 變成
 `test1.webp`。
 

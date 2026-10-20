@@ -39,7 +39,11 @@ DWG 解析與圖片轉換會讓 native command-line tools 處理複雜 binary in
 
 對外承諾相容性或效能前，請以應用實際會遇到的 DWG 版本、語言、entities 與下游軟體建立 corpus。
 
-## Logging 與隱私
+## 日誌與隱私 {#logging-與隱私}
 
-不要記錄來源 bytes、完整 JSON、使用者檔名或 server paths。公開例外雖提供去敏 context，application
-log 仍應符合你的資料保留與存取政策。
+清理暫存檔失敗時，套件會嘗試透過 Laravel 預設 logger 記錄一筆 `warning`。診斷資料不包含路徑、
+檔名、檔案內容、原始例外訊息或堆疊追蹤。日誌服務無法使用時，警告可能無法保存。
+如何排查，以及清理失敗對操作的影響，請參考[暫存清理警告](./errors-and-troubleshooting#暫存清理警告)。
+
+請勿在應用程式的日誌中記錄來源檔案內容、完整 JSON、使用者檔名或伺服器路徑。套件例外提供的診斷資料
+雖已移除敏感資訊，你仍需依自己的資料保留與存取政策管理日誌。

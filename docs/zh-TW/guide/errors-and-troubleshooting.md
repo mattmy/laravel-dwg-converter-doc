@@ -1,6 +1,6 @@
 # 錯誤與疑難排解
 
-套件公開三種例外。每種例外都提供穩定的 `reason()` 與去敏後的 scalar `context()`，供應用處理與診斷。
+套件提供三種例外。你可以用 `reason()` 判斷錯誤原因，並用 `context()` 查看已移除敏感資訊的診斷資料。
 
 ## 處理失敗
 
@@ -13,15 +13,15 @@ use Mattmy\DwgConverter\Facades\Dwg;
 try {
     $result = Dwg::toDxf($request->file('drawing'))->convert();
 } catch (LibreDwgUnavailable $exception) {
-    report([$exception->reason(), $exception->context()]);
+    report($exception);
 } catch (InvalidDwg $exception) {
     return back()->withErrors(['drawing' => '無法接受這份 DWG。']);
 } catch (DwgOperationFailed $exception) {
-    report([$exception->reason(), $exception->context()]);
+    report($exception);
 }
 ```
 
-不要向使用者顯示 raw diagnostic context。雖然內容已有長度限制並移除 paths，但用途仍是 server 診斷。
+診斷資料已限制長度並移除路徑，但仍只適合留在伺服器端，不要直接顯示給使用者。
 
 ## 例外分類
 
@@ -50,7 +50,24 @@ commands。
 
 `thumbnail_not_found` 是有效 DWG 沒有預覽時的正常結果。需要渲染預覽時請使用 `toImage()`。
 
+`thumbnail_invalid` 表示有找到預覽，但沒有通過 BMP／PNG／WMF 基本結構檢查。套件不會修補它，
+詳見[縮圖驗證邊界](./thumbnails#驗證邊界)。
+
+## JSON 驗證失敗
+
+`json_invalid` 可能是 JSON 語法有誤，也可能是巢狀深度超過 PHP 原生的 `depth = 512` 限制。
+請查看 `$exception->getPrevious()`：如果是錯誤碼為 `JSON_ERROR_DEPTH` 的 `JsonException`，
+就代表內容過深，不一定是語法錯誤。
+
 ## Storage 失敗
 
-明確提供的檔名必須是安全 basename。套件會附加或正規化可信的輸出副檔名。失敗的 `storeAs()` 仍會
-消費結果並清理暫存產物；再次交付前需重新執行轉換。
+指定檔名時，請只填檔名，不要包含目錄路徑。套件會依實際輸出格式加上副檔名，或統一副檔名的大小寫。
+即使 `storeAs()` 失敗，這個結果也不能再次使用；請重新執行轉換後再儲存。
+
+## 暫存清理警告
+
+看到 `warning` 等級的 `DWG converter temporary cleanup failed.` 時，請檢查執行轉換的程序
+是否有權限刪除暫存目錄內的檔案。已完成的轉換或儲存結果仍然有效；操作本身若失敗，原始例外也會保留。
+
+暫存檔可能殘留，套件不會重試清理。記錄警告時發生的錯誤也不會中斷操作。
+記錄內容見[日誌與隱私](./performance-and-security#logging-與隱私)。
