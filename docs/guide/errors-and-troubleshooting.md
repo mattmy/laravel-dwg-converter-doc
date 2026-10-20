@@ -13,6 +13,7 @@ use Mattmy\DwgConverter\Facades\Dwg;
 
 try {
     $result = Dwg::toDxf($request->file('drawing'))->convert();
+    $path = $result->storeAs('drawings');
 } catch (LibreDwgUnavailable $exception) {
     report($exception);
 } catch (InvalidDwg $exception) {
@@ -24,6 +25,9 @@ try {
 
 Do not show raw diagnostic context to end users. It is bounded and path-redacted, but is intended for server
 diagnostics.
+
+That sanitization applies to `context()`. Previous exceptions and stack traces may still contain server paths;
+keep full exception reports in access-controlled server logs.
 
 ## Exception categories
 

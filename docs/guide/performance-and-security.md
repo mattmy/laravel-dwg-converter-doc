@@ -48,5 +48,6 @@ The diagnostic details exclude paths, filenames, file contents, raw exception me
 If logging is unavailable, the warning may not be saved. See [cleanup warnings](./errors-and-troubleshooting#temporary-cleanup-warning)
 for troubleshooting and how cleanup failures affect your operation.
 
-Do not log source bytes, complete JSON, user filenames, or server paths. Public exceptions expose sanitized
-context, but application logs should still follow your data-retention and access policies.
+Avoid adding source bytes, complete JSON, user filenames, or server paths to application log messages.
+Public exceptions expose sanitized context, but full exception reports may include paths in previous exceptions
+or stack traces. Restrict log access and follow your data-retention policies.

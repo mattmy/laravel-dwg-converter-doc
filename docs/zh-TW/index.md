@@ -19,8 +19,8 @@ features:
   - title: 轉換 DWG
     details: 輸出 DXF、結構 JSON、PNG、JPEG 或 WebP。
   - title: 為 Laravel 打造
-    details: 接受上傳、path 或 bytes，並透過 Laravel Storage 儲存或串流結果。
+    details: 接受上傳、本機路徑或位元組內容，並透過 Laravel Storage 儲存或串流結果。
 ---
 
 請先閱讀[系統需求與第一次轉換](/zh-TW/guide/getting-started)，或直接確認各操作需要哪些
-[外部 commands](/zh-TW/guide/external-tools)。
+[外部命令](/zh-TW/guide/external-tools)。

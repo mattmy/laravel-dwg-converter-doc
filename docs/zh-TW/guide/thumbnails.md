@@ -2,7 +2,7 @@
 
 `thumbnail()` 會擷取 DWG 已內嵌的預覽，不會渲染圖面。
 
-> **必要 command：** LibreDWG `dwgbmp`。請參考[外部工具](./external-tools#libredwg)。
+> **必要命令：** LibreDWG `dwgbmp`。請參考[外部工具](./external-tools#libredwg)。
 
 ## 擷取內嵌預覽
 
@@ -15,7 +15,7 @@ $extension = $thumbnail->extension(); // bmp、png 或 wmf
 $mimeType = $thumbnail->mimeType();
 ```
 
-副檔名與 MIME type 依輸出 bytes 判定，不信任 LibreDWG 產生的檔名。
+副檔名與 MIME 類型依輸出內容判定，不採用 LibreDWG 產生的檔名。
 
 ## 驗證邊界
 
@@ -36,11 +36,12 @@ $path = $thumbnail->storeAs(
 );
 ```
 
-`storeAs()` 會消費結果。對同一物件再次呼叫 `output()` 或 `storeAs()` 會拋出 `LogicException`。
+呼叫 `storeAs()` 後，這個結果就不能再次使用。對同一物件再次呼叫 `output()` 或 `storeAs()`
+會拋出 `LogicException`。
 
 ## 沒有縮圖
 
-有效 DWG 也可能沒有預覽。此時會拋出 reason 為 `thumbnail_not_found` 的 `DwgOperationFailed`，
+有效 DWG 也可能沒有預覽。此時會拋出 `DwgOperationFailed`，`reason()` 為 `thumbnail_not_found`，
 不會回傳 `null`，也不會自動改用 `toImage()`。
 
-需要渲染整個 model space 時，請使用[圖片預覽](./image-previews)。
+需要渲染整個模型空間時，請使用[圖片預覽](./image-previews)。

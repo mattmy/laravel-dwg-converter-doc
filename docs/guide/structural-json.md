@@ -39,3 +39,6 @@ error from a syntax error.
 Structural JSON can be much larger than its DWG source. The default dedicated limit is 64 MiB, combined with
 the general output limit by using the smaller active value. Prefer `storeAs()` because `output()` loads the
 entire JSON into PHP memory.
+
+`storeAs()` avoids loading the file again for delivery; validation during `convert()` still reads and decodes
+the entire JSON. Allow more PHP memory than the file size alone, even when using `storeAs()`.

@@ -73,7 +73,7 @@ Install LibreOffice from the [official download page](https://www.libreoffice.or
 Point the package to the console launcher, normally:
 
 ```dotenv
-DWG_CONVERTER_LIBREOFFICE=C:/Program Files/LibreOffice/program/soffice.com
+DWG_CONVERTER_LIBREOFFICE="C:/Program Files/LibreOffice/program/soffice.com"
 ```
 
 Use `soffice.com`, not `soffice.exe`: the GUI launcher can report success without producing headless output.
@@ -125,7 +125,7 @@ magick --version
 If it is not on `PATH`, set:
 
 ```dotenv
-DWG_CONVERTER_IMAGEMAGICK=C:/Program Files/ImageMagick-7.x.x-Q16-HDRI/magick.exe
+DWG_CONVERTER_IMAGEMAGICK="C:/Program Files/ImageMagick-7.x.x-Q16-HDRI/magick.exe"
 ```
 
 In every environment, `magick --version` must report ImageMagick 7. Review ImageMagick's security policy

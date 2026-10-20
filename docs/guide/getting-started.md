@@ -40,12 +40,7 @@ bundle any external tool.
 
 ## Configuration
 
-Commands on `PATH` use the default configuration. If a command lives elsewhere, publish the config and set
-its absolute path:
-
-```bash
-php artisan vendor:publish --tag=dwg-converter-config
-```
+Commands on `PATH` use the default configuration. If a command lives elsewhere, set its absolute path in `.env`:
 
 ```dotenv
 LIBREDWG_DWGBMP=/opt/libredwg/bin/dwgbmp

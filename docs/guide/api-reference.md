@@ -95,3 +95,5 @@ context(): array
 ```
 
 See [Errors and troubleshooting](./errors-and-troubleshooting).
+
+For changes between releases, see the [Changelog](https://github.com/mattmy/laravel-dwg-converter/blob/main/CHANGELOG.md).

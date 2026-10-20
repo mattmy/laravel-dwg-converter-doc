@@ -1,7 +1,7 @@
 # 開始使用
 
 Laravel DWG Converter 讓 Laravel 應用擷取 DWG 內嵌縮圖，或將檔案輸出為 DXF、結構 JSON、PNG、
-JPEG 或 WebP。你只需安裝實際會呼叫之操作所需的外部 commands。
+JPEG 或 WebP。你只需安裝實際會呼叫之操作所需的外部命令。
 
 ## 系統需求
 
@@ -9,17 +9,17 @@ JPEG 或 WebP。你只需安裝實際會呼叫之操作所需的外部 commands�
 |---|---|
 | PHP | 8.2 或更新版本 |
 | Laravel | 12 或 13 |
-| CI 實測 | PHP 8.2 搭配 Laravel 12；PHP 8.3–8.5 搭配 Laravel 12–13，包含 PHP 8.2／Laravel 12 lowest 與 current boundary |
+| CI 實測 | PHP 8.2 搭配 Laravel 12；PHP 8.3–8.5 搭配 Laravel 12–13，包含 PHP 8.2／Laravel 12 的最低與目前相容相依版本 |
 
 Laravel 13 需要 PHP 8.3 或更新版本。
 
 每個操作有不同的外部需求：
 
-| 操作 | 必要 commands |
+| 操作 | 必要命令 |
 |---|---|
 | 內嵌縮圖 | `dwgbmp` |
 | DXF | `dwg2dxf` |
-| 結構 JSON | 具 JSON output 能力的 `dwgread` |
+| 結構 JSON | 支援 JSON 輸出的 `dwgread` |
 | PNG、JPEG 或 WebP 預覽 | `dwg2dxf`、LibreOffice 7.4+ `soffice`、ImageMagick 7 `magick` |
 
 安裝前請閱讀[外部工具](./external-tools)。縮圖、DXF 與 JSON 操作不需要 LibreOffice 或
@@ -33,16 +33,12 @@ ImageMagick。
 composer require mattmy/laravel-dwg-converter
 ```
 
-接著安裝所選操作需要的 commands。LibreDWG 安裝方式請參考
-[LibreDWG 官方 repository](https://github.com/libredwg/libredwg)。本套件不會下載或附帶任何外部工具。
+接著安裝所選操作需要的命令。LibreDWG 安裝方式請參考
+[LibreDWG 官方儲存庫](https://github.com/libredwg/libredwg)。本套件不會下載或附帶任何外部工具。
 
 ## 設定
 
-commands 位於 `PATH` 時可以直接使用預設設定。否則請發布 config 並填入絕對路徑：
-
-```bash
-php artisan vendor:publish --tag=dwg-converter-config
-```
+命令位於 `PATH` 時可以直接使用預設設定。若工具安裝在其他位置，請在 `.env` 填入絕對路徑：
 
 ```dotenv
 LIBREDWG_DWGBMP=/opt/libredwg/bin/dwgbmp
@@ -52,11 +48,11 @@ DWG_CONVERTER_LIBREOFFICE=/usr/bin/soffice
 DWG_CONVERTER_IMAGEMAGICK=/usr/local/bin/magick
 ```
 
-已位於 `PATH` 的 commands 不必設定變數。Timeout、byte limits 與暫存空間請參考[設定參考](./configuration)。
+已位於 `PATH` 的命令不必設定變數。逾時、檔案大小上限與暫存空間請參考[設定參考](./configuration)。
 
 ## 快速開始
 
-下方範例接收有效的 Laravel upload、擷取內嵌預覽，再串流至預設 Storage disk：
+下方範例接收有效的 Laravel 上傳檔案、擷取內嵌預覽，再串流至預設 Storage 磁碟：
 
 ```php
 use Mattmy\DwgConverter\Facades\Dwg;
@@ -69,7 +65,7 @@ $path = $thumbnail->storeAs(
 );
 ```
 
-副檔名依預覽 bytes 判定，可能是 `bmp`、`png` 或 `wmf`。有效 DWG 也可能沒有內嵌預覽；若這是
+副檔名依預覽內容判定，可能是 `bmp`、`png` 或 `wmf`。有效 DWG 也可能沒有內嵌預覽；若這是
 預期情況，請處理 `DwgOperationFailed`。
 
 ## 下一步

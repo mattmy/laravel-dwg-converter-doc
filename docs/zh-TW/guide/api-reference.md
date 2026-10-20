@@ -1,8 +1,8 @@
 # API 參考
 
-本頁只列出 application-facing API。操作細節與安裝方式請閱讀對應指南。
+本頁列出應用程式可直接使用的 API。操作細節與安裝方式請閱讀對應指南。
 
-## Facade operations
+## Facade 操作 {#facade-operations}
 
 ```php
 Dwg::thumbnail(UploadedFile|string|DwgBinary $source): ThumbnailExtraction
@@ -11,7 +11,7 @@ Dwg::toJson(UploadedFile|string|DwgBinary $source): JsonConversion
 Dwg::toImage(UploadedFile|string|DwgBinary $source): ImageConversion
 ```
 
-每個方法只綁定來源、不執行 I/O，並回傳新操作。請參考[輸入與輸出](./inputs-and-outputs)。
+每個方法只指定來源，不會讀寫檔案或執行轉換，並回傳新的操作物件。請參考[輸入與輸出](./inputs-and-outputs)。
 
 ## ThumbnailExtraction
 
@@ -28,10 +28,10 @@ toVersion(DxfVersion $version): self
 convert(): DwgOutput
 ```
 
-`toVersion()` 回傳具有指定 target 的新操作；`convert()` 建立 ASCII DXF。請參考
+`toVersion()` 回傳已指定目標版本的新操作；`convert()` 建立 ASCII DXF。請參考
 [轉換為 DXF](./dxf-conversion)。
 
-`DxfVersion` cases：`R12`、`R14`、`R2000`、`R2004`、`R2007`、`R2010`、`R2013`、`R2018`。
+`DxfVersion` 可選值：`R12`、`R14`、`R2000`、`R2004`、`R2007`、`R2010`、`R2013`、`R2018`。
 
 ## JsonConversion
 
@@ -39,7 +39,7 @@ convert(): DwgOutput
 convert(): DwgOutput
 ```
 
-建立 LibreDWG 結構 JSON，沒有 target-version 或 format 選項。請參考[輸出結構 JSON](./structural-json)。
+建立 LibreDWG 結構 JSON，沒有目標版本或格式選項。請參考[輸出結構 JSON](./structural-json)。
 
 ## ImageConversion
 
@@ -62,7 +62,7 @@ DwgBinary::from(string $contents): DwgBinary
 $binary->contents(): string
 ```
 
-包裝 raw bytes，避免 string 被誤認為 local path。
+包裝原始位元組內容，避免直接傳入字串時被當成本機路徑。
 
 ## DwgOutput
 
@@ -79,11 +79,11 @@ storeAs(string $path, ?string $name = null, ?string $disk = null): string
 
 `storeAs()` 會保留你提供的檔名，再視需要加上輸出格式的副檔名；副檔名已相同時，只會統一大小寫。
 省略 `name` 時，本機檔案與上傳檔案會沿用去掉副檔名後的名稱。如果名稱不安全或沒有名稱
-（例如 `DwgBinary`），就使用 `converted-{16 lowercase hex}`。WebP 的
+（例如 `DwgBinary`），就使用 `converted-` 加上 16 個小寫十六進位字元。WebP 的
 `test1.webp` 維持 `test1.webp`、`test1.png` 變成 `test1.png.webp`，`test1.WEBP` 變成
 `test1.webp`。
 
-## Exceptions
+## 例外 {#exceptions}
 
 `LibreDwgUnavailable`、`InvalidDwg`、`DwgOperationFailed` 都提供：
 
@@ -93,3 +93,5 @@ context(): array
 ```
 
 請參考[錯誤與疑難排解](./errors-and-troubleshooting)。
+
+版本之間的變更請參考 [Changelog](https://github.com/mattmy/laravel-dwg-converter/blob/main/CHANGELOG.md)。

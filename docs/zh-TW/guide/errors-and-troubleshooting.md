@@ -12,6 +12,7 @@ use Mattmy\DwgConverter\Facades\Dwg;
 
 try {
     $result = Dwg::toDxf($request->file('drawing'))->convert();
+    $path = $result->storeAs('drawings');
 } catch (LibreDwgUnavailable $exception) {
     report($exception);
 } catch (InvalidDwg $exception) {
@@ -23,28 +24,30 @@ try {
 
 診斷資料已限制長度並移除路徑，但仍只適合留在伺服器端，不要直接顯示給使用者。
 
+這項處理只適用於 `context()`。原始例外與堆疊追蹤仍可能包含伺服器路徑，完整例外紀錄請保存在有
+存取控管的伺服器日誌中。
+
 ## 例外分類
 
-| Exception | 常見 reasons |
+| 例外 | 常見原因 |
 |---|---|
 | `LibreDwgUnavailable` | `executable_not_found`、`unsupported_tool_capability`、`invalid_configuration` |
-| `InvalidDwg` | 無效 upload／path／header、輸入過大、`libredwg_rejected_input` |
-| `DwgOperationFailed` | timeout、process／output／格式／Storage 失敗、沒有縮圖 |
+| `InvalidDwg` | 上傳、路徑或檔頭無效、輸入過大、`libredwg_rejected_input` |
+| `DwgOperationFailed` | 逾時、程序執行或輸出失敗、格式無效、儲存失敗、沒有縮圖 |
 
-`libredwg_rejected_input` 代表所選 LibreDWG command 拒絕本次來源；不代表被接受的檔案已證明安全或
+`libredwg_rejected_input` 代表所選 LibreDWG 命令拒絕本次來源；不代表被接受的檔案已證明安全或
 完全符合格式。
 
-## 找不到 command
+## 找不到命令 {#找不到-command}
 
-先執行該操作的[驗證 command](./external-tools)，需要時設定絕對路徑。只需排查失敗操作實際使用的
-commands。
+先執行該操作的[驗證命令](./external-tools)，需要時設定絕對路徑。只需排查失敗操作實際使用的命令。
 
-## 圖片 command 成功但沒有產物
+## 圖片命令成功但沒有產物 {#圖片-command-成功但沒有產物}
 
 - Windows 請使用 `soffice.com`，不要使用 `soffice.exe`。
-- 使用較短的 absolute `temporary_directory`。
+- 將 `temporary_directory` 設為較短的絕對路徑。
 - 確認 LibreOffice 7.4+ 與 ImageMagick 7 `magick`。
-- 確認 worker 可寫入暫存資料夾。
+- 確認執行轉換的程序可寫入暫存資料夾。
 
 ## 沒有內嵌縮圖
 

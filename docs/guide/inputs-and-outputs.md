@@ -13,6 +13,8 @@ $result = Dwg::toDxf($request->file('drawing'))->convert();
 ```
 
 Invalid or incomplete uploads fail before an external command starts.
+Validate that the field contains a file before calling the package: `$request->file('drawing')` can return
+`null`, which is not an accepted source type.
 
 ## Local absolute paths
 
@@ -65,7 +67,12 @@ or:
 $bytes = $result->output();
 ```
 
-`storeAs()` streams to Laravel Storage. Its optional name must be a filename without a directory path.
+`storeAs()` streams to Laravel Storage. `path` is a directory relative to the selected disk, such as
+`drawings/2026`; use `/` as the separator, or an empty string for the disk root. Absolute paths and `.` or
+`..` segments are rejected. Omit `disk` to use Laravel's default disk. The returned string is the stored
+path relative to that disk, not a public URL.
+
+Its optional name must be a filename without a directory path.
 The package keeps that name and adds the output extension if needed, or normalizes its letter case if it
 already matches. Without a name, local files and uploads use their filename without the extension. An unsafe
 or missing source name, including `DwgBinary`, falls back to `converted-{16 lowercase hex}`.
