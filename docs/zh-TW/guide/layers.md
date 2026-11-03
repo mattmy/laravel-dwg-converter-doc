@@ -51,5 +51,3 @@ $names = $layers->pluck('name');
 `layers_invalid`。整次查詢會失敗，不會回傳部分資料或自動轉碼。其他錯誤見[錯誤與疑難排解](./errors-and-troubleshooting)。
 
 查詢沿用 `timeout`、`max_input_bytes` 與 `max_output_bytes`，詳見[設定參考](./configuration#runtime-設定)。
-
-目前只在 Windows 上以 10 份 R2007+ 圖檔驗證過中文名稱；舊版 DWG 編碼與其他平台尚未驗證。

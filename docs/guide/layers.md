@@ -55,6 +55,3 @@ fails, without partial results or automatic encoding conversion. See [Errors and
 for other failures.
 
 Queries use `timeout`, `max_input_bytes`, and `max_output_bytes`. See [Configuration](./configuration#runtime-settings).
-
-Chinese layer names have only been verified with 10 R2007+ drawings on Windows. Older DWG codepages and other platforms
-remain unverified.
