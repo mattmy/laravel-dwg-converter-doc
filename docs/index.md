@@ -24,3 +24,5 @@ features:
 
 Start with the [requirements and first conversion](/guide/getting-started), or check exactly which
 [external commands](/guide/external-tools) your operation needs.
+
+For layer names and states, see [Reading layer data](/guide/layers).

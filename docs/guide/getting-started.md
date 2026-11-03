@@ -1,8 +1,8 @@
 # Getting started
 
 Laravel DWG Converter lets a Laravel application extract a DWG's embedded thumbnail or export the file as
-DXF, structural JSON, PNG, JPEG, or WebP. Install only the external commands required by the operation you
-intend to call.
+DXF, structural JSON, PNG, JPEG, or WebP. You can also read layer names and states. Install only the external
+commands needed by the features you use.
 
 ## Requirements
 
@@ -21,10 +21,11 @@ Each operation has separate external requirements:
 | Embedded thumbnail | `dwgbmp` |
 | DXF | `dwg2dxf` |
 | Structural JSON | `dwgread` with JSON output support |
+| Layer data | `dwglayers --flags` |
 | PNG, JPEG, or WebP preview | `dwg2dxf`, LibreOffice 7.4+ `soffice`, ImageMagick 7 `magick` |
 
-See [External tools](./external-tools) before installing them. LibreOffice and ImageMagick are not required
-for thumbnail, DXF, or JSON operations.
+See [External tools](./external-tools) before installing them. Only image previews require LibreOffice and
+ImageMagick.
 
 ## Installation
 
@@ -46,6 +47,7 @@ Commands on `PATH` use the default configuration. If a command lives elsewhere, 
 LIBREDWG_DWGBMP=/opt/libredwg/bin/dwgbmp
 LIBREDWG_DWG2DXF=/opt/libredwg/bin/dwg2dxf
 LIBREDWG_DWGREAD=/opt/libredwg/bin/dwgread
+LIBREDWG_DWGLAYERS=/opt/libredwg/bin/dwglayers
 DWG_CONVERTER_LIBREOFFICE=/usr/bin/soffice
 DWG_CONVERTER_IMAGEMAGICK=/usr/local/bin/magick
 ```
@@ -77,5 +79,7 @@ no embedded preview; handle `DwgOperationFailed` when that result is expected.
 - [Install and verify external tools](./external-tools)
 - [Convert a DWG to DXF](./dxf-conversion)
 - [Create an image preview](./image-previews)
+- [Export structural JSON](./structural-json)
+- [Read layer data](./layers)
 - [Choose inputs and deliver outputs](./inputs-and-outputs)
 - [Handle errors](./errors-and-troubleshooting)

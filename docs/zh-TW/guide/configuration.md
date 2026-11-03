@@ -16,6 +16,7 @@ php artisan vendor:publish --tag=dwg-converter-config
 | `executables.dwgbmp` | `LIBREDWG_DWGBMP` | `thumbnail()` |
 | `executables.dwg2dxf` | `LIBREDWG_DWG2DXF` | `toDxf()`、`toImage()` |
 | `executables.dwgread` | `LIBREDWG_DWGREAD` | `toJson()` |
+| `executables.dwglayers` | `LIBREDWG_DWGLAYERS` | `layers()` |
 | `executables.libreoffice` | `DWG_CONVERTER_LIBREOFFICE` | `toImage()` |
 | `executables.imagemagick` | `DWG_CONVERTER_IMAGEMAGICK` | `toImage()` |
 
@@ -29,9 +30,9 @@ php artisan vendor:publish --tag=dwg-converter-config
 
 | 設定名稱 | 預設值 | 影響 |
 |---|---:|---|
-| `timeout` | `60` 秒 | 分別套用於每個轉換程序 |
+| `timeout` | `60` 秒 | 每個轉換或查詢程序的逾時上限 |
 | `max_input_bytes` | 200 MiB | DWG 暫存副本的大小上限 |
-| `max_output_bytes` | 512 MiB | 一般輸出及中介產物上限 |
+| `max_output_bytes` | 512 MiB | 輸出檔、中介產物及圖層資料的大小上限 |
 | `max_json_output_bytes` | 64 MiB | JSON 專屬輸出上限 |
 | `temporary_directory` | Laravel 的 framework 儲存目錄 | 套件暫存工作目錄的根路徑 |
 
@@ -39,8 +40,9 @@ php artisan vendor:publish --tag=dwg-converter-config
 `temporary_directory` 必須是執行轉換的程序可寫入的本機絕對路徑，預設為
 `storage_path('framework/laravel-dwg-converter')`。
 
-圖片操作最多會執行三個轉換程序，檢查命令是否可用時也各有短暫的逾時限制。
-因此，總耗時可能超過單一 `timeout` 設定值。
+每個工具的可用性檢查另有 10 秒上限，因此操作總耗時可能超過 `timeout`。圖片轉換最多會執行三個轉換程序。
+
+圖層查詢的 `max_output_bytes` 以工具回傳資料的位元組數計算，接收資料時一旦超限就會停止程序。
 
 ## 停用大小上限 {#停用-byte-limits}
 

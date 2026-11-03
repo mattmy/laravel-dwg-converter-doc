@@ -9,6 +9,7 @@ Dwg::thumbnail(UploadedFile|string|DwgBinary $source): ThumbnailExtraction
 Dwg::toDxf(UploadedFile|string|DwgBinary $source): DxfConversion
 Dwg::toJson(UploadedFile|string|DwgBinary $source): JsonConversion
 Dwg::toImage(UploadedFile|string|DwgBinary $source): ImageConversion
+Dwg::layers(UploadedFile|string|DwgBinary $source): LayerReading
 ```
 
 Each method binds a source without I/O and returns a new operation. See [Inputs and outputs](./inputs-and-outputs).
@@ -56,6 +57,16 @@ Every option returns a new operation and preserves the other selections. See
 
 - `ImageFormat`: `PNG`, `JPEG`, `WEBP`.
 - `ImageResolution`: `HIGH`, `MEDIUM`, `LOW`.
+
+## LayerReading
+
+```php
+read(): Collection<int, DwgLayer>
+```
+
+Returns a reusable `Collection<int, DwgLayer>` without an `output()` or `storeAs()` step.
+`DwgLayer` exposes read-only fields: `name: string`, `isFrozen: bool`, `isOff: bool`, and `isLocked: bool`.
+See [Reading layer data](./layers) for filtering and state meanings.
 
 ## DwgBinary
 

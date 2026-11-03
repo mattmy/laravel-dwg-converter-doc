@@ -10,9 +10,10 @@ downloaded or bundled by the package. Install only the commands required by the 
 | `Dwg::thumbnail(...)->extract()` | Embedded BMP, PNG, or WMF preview | LibreDWG `dwgbmp` |
 | `Dwg::toDxf(...)->convert()` | ASCII DXF | LibreDWG `dwg2dxf` |
 | `Dwg::toJson(...)->convert()` | LibreDWG structural JSON | LibreDWG `dwgread` with JSON output |
+| `Dwg::layers(...)->read()` | Layer data Collection | LibreDWG `dwglayers --flags` |
 | `Dwg::toImage(...)->convert()` | PNG, JPEG, or WebP preview | LibreDWG `dwg2dxf`, LibreOffice 7.4+ `soffice`, ImageMagick 7 `magick` |
 
-Calling `toDxf()`, `toJson()`, or `thumbnail()` does not require LibreOffice or ImageMagick.
+Only image previews require LibreOffice and ImageMagick.
 
 ## LibreDWG
 
@@ -25,7 +26,11 @@ Verify the commands you plan to use:
 dwgbmp --version
 dwg2dxf --version
 dwgread --version
+dwglayers --version
+dwglayers --help
 ```
+
+Layer queries require `--flags`; check that `dwglayers --help` lists this option.
 
 If they are not on `PATH`, set their absolute paths:
 
@@ -33,6 +38,7 @@ If they are not on `PATH`, set their absolute paths:
 LIBREDWG_DWGBMP=/absolute/path/to/dwgbmp
 LIBREDWG_DWG2DXF=/absolute/path/to/dwg2dxf
 LIBREDWG_DWGREAD=/absolute/path/to/dwgread
+LIBREDWG_DWGLAYERS=/absolute/path/to/dwglayers
 ```
 
 A version string such as `0.14` does not identify its patch level. Confirm the build's provenance and security
@@ -137,6 +143,7 @@ before processing untrusted files.
 Thumbnail only   → dwgbmp
 DXF only         → dwg2dxf
 JSON only        → dwgread with JSON output
+Layer data only  → dwglayers with --flags
 Image previews   → dwg2dxf + soffice 7.4+ + magick 7
 All features     → all commands above
 ```

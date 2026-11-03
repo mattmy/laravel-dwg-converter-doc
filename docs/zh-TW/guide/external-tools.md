@@ -10,9 +10,10 @@ Laravel DWG Converter 會執行安裝於本機環境的命令列工具。它們�
 | `Dwg::thumbnail(...)->extract()` | 內嵌 BMP、PNG 或 WMF 預覽 | LibreDWG `dwgbmp` |
 | `Dwg::toDxf(...)->convert()` | ASCII DXF | LibreDWG `dwg2dxf` |
 | `Dwg::toJson(...)->convert()` | LibreDWG 結構 JSON | 支援 JSON 輸出的 LibreDWG `dwgread` |
+| `Dwg::layers(...)->read()` | 圖層資料 Collection | LibreDWG `dwglayers --flags` |
 | `Dwg::toImage(...)->convert()` | PNG、JPEG 或 WebP 預覽 | LibreDWG `dwg2dxf`、LibreOffice 7.4+ `soffice`、ImageMagick 7 `magick` |
 
-呼叫 `toDxf()`、`toJson()` 或 `thumbnail()` 不需要 LibreOffice 或 ImageMagick。
+只有建立圖片預覽才需要 LibreOffice 與 ImageMagick。
 
 ## LibreDWG
 
@@ -25,7 +26,11 @@ Laravel DWG Converter 會執行安裝於本機環境的命令列工具。它們�
 dwgbmp --version
 dwg2dxf --version
 dwgread --version
+dwglayers --version
+dwglayers --help
 ```
+
+圖層查詢需要 `--flags`；請確認 `dwglayers --help` 有列出這個選項。
 
 不在 `PATH` 時請設定絕對路徑：
 
@@ -33,6 +38,7 @@ dwgread --version
 LIBREDWG_DWGBMP=/absolute/path/to/dwgbmp
 LIBREDWG_DWG2DXF=/absolute/path/to/dwg2dxf
 LIBREDWG_DWGREAD=/absolute/path/to/dwgread
+LIBREDWG_DWGLAYERS=/absolute/path/to/dwglayers
 ```
 
 `0.14` 之類的版本字串無法辨識修補版本。請確認安裝來源與安全修補，不要把簡短版本字串當成
@@ -134,6 +140,7 @@ DWG_CONVERTER_IMAGEMAGICK="C:/Program Files/ImageMagick-7.x.x-Q16-HDRI/magick.ex
 只擷取縮圖       → dwgbmp
 只輸出 DXF       → dwg2dxf
 只輸出 JSON      → 支援 JSON 輸出的 dwgread
+只查詢圖層       → 支援 --flags 的 dwglayers
 輸出圖片預覽     → dwg2dxf + soffice 7.4+ + magick 7
 使用全部功能     → 上述全部命令
 ```

@@ -1,6 +1,6 @@
 # 輸入與輸出
 
-四個操作接受相同的三種來源型別，並回傳相同的一次性輸出物件。
+所有操作都接受相同的三種來源。轉換與縮圖擷取回傳一次性的 `DwgOutput`，圖層查詢則回傳可重複使用的 Collection。
 
 ## 上傳檔案
 
@@ -36,13 +36,13 @@ use Mattmy\DwgConverter\DwgBinary;
 $result = Dwg::toDxf(DwgBinary::from($bytes))->convert();
 ```
 
-呼叫 `convert()` 或 `extract()` 時，套件才會建立來源的暫存副本。你提供的原始檔案或位元組內容都不會改變。
+呼叫 `convert()`、`extract()` 或 `read()` 時，套件才會建立來源的暫存副本。你提供的原始檔案或位元組內容都不會改變。
 
 各格式的檢查與限制，請參考[縮圖](./thumbnails#驗證邊界)與[結構 JSON](./structural-json#巢狀深度)。
 
 ## 一次性輸出
 
-每次成功操作都回傳 `DwgOutput`。
+每次成功的檔案操作都回傳 `DwgOutput`。
 
 結果物件管理著暫存檔，請在同一個程序中使用。複製、序列化或反序列化都會拋出 `LogicException`，
 原本的結果不受影響。如果要透過佇列處理，請讓佇列工作能存取來源檔案，再在工作內執行轉換。
@@ -79,3 +79,8 @@ $bytes = $result->output();
 清理失敗時，套件會透過 Laravel 預設 logger 記錄 `warning`。已取得的結果或原始例外不受影響，
 但暫存檔可能殘留。結果使用後不會重試清理，記錄警告時發生的錯誤也不會中斷操作。
 排查方式見[暫存清理警告](./errors-and-troubleshooting#暫存清理警告)。
+
+## 圖層查詢結果
+
+`layers()->read()` 回傳一般的 `Collection<int, DwgLayer>`，可以重複篩選與計數，不受一次性輸出限制。
+使用範例見[圖層資料查詢](./layers)。

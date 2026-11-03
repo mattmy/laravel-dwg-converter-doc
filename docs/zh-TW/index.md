@@ -24,3 +24,5 @@ features:
 
 請先閱讀[系統需求與第一次轉換](/zh-TW/guide/getting-started)，或直接確認各操作需要哪些
 [外部命令](/zh-TW/guide/external-tools)。
+
+需要取得圖層名稱與狀態時，請參考[圖層資料查詢](/zh-TW/guide/layers)。

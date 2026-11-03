@@ -1,6 +1,7 @@
 # Inputs and outputs
 
-All four operations accept the same three source types and return the same one-time output object.
+All operations accept the same three source types. Conversions and thumbnail extraction return a one-time
+`DwgOutput`; layer queries return a reusable Collection.
 
 ## Uploaded files
 
@@ -36,7 +37,7 @@ use Mattmy\DwgConverter\DwgBinary;
 $result = Dwg::toDxf(DwgBinary::from($bytes))->convert();
 ```
 
-The package makes a temporary copy of the source when you call `convert()` or `extract()`. Your original
+The package makes a temporary copy of the source when you call `convert()`, `extract()`, or `read()`. Your original
 file or bytes stay unchanged.
 
 See [thumbnails](./thumbnails#validation-boundary) and [structural JSON](./structural-json#nesting-depth)
@@ -44,7 +45,7 @@ for the format checks and their limits.
 
 ## One-time output
 
-Every successful operation returns `DwgOutput`.
+Each successful file operation returns `DwgOutput`.
 
 The result holds temporary files, so keep it in the same process. Cloning, serializing, or unserializing it
 throws `LogicException`; the original result stays unchanged. For a queue job, make the source file available
@@ -85,3 +86,8 @@ or when an unused result is destroyed.
 If cleanup fails, the package logs a `warning` through Laravel's default logger. Your output or original
 exception stays the same, but temporary files may remain. Cleanup is not retried after the result has been
 used, and a logging failure does not interrupt the operation. See [cleanup warnings](./errors-and-troubleshooting#temporary-cleanup-warning).
+
+## Layer query results
+
+`layers()->read()` returns a regular `Collection<int, DwgLayer>` that you can filter and count repeatedly,
+without one-time output restrictions. See [Reading layer data](./layers) for examples.

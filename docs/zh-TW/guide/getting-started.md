@@ -1,7 +1,7 @@
 # 開始使用
 
 Laravel DWG Converter 讓 Laravel 應用擷取 DWG 內嵌縮圖，或將檔案輸出為 DXF、結構 JSON、PNG、
-JPEG 或 WebP。你只需安裝實際會呼叫之操作所需的外部命令。
+JPEG 或 WebP，也能查詢圖層名稱與狀態。只需安裝實際使用功能所需的外部命令。
 
 ## 系統需求
 
@@ -20,10 +20,10 @@ Laravel 13 需要 PHP 8.3 或更新版本。
 | 內嵌縮圖 | `dwgbmp` |
 | DXF | `dwg2dxf` |
 | 結構 JSON | 支援 JSON 輸出的 `dwgread` |
+| 圖層資料查詢 | `dwglayers --flags` |
 | PNG、JPEG 或 WebP 預覽 | `dwg2dxf`、LibreOffice 7.4+ `soffice`、ImageMagick 7 `magick` |
 
-安裝前請閱讀[外部工具](./external-tools)。縮圖、DXF 與 JSON 操作不需要 LibreOffice 或
-ImageMagick。
+安裝前請閱讀[外部工具](./external-tools)。只有建立圖片預覽才需要 LibreOffice 與 ImageMagick。
 
 ## 安裝
 
@@ -44,6 +44,7 @@ composer require mattmy/laravel-dwg-converter
 LIBREDWG_DWGBMP=/opt/libredwg/bin/dwgbmp
 LIBREDWG_DWG2DXF=/opt/libredwg/bin/dwg2dxf
 LIBREDWG_DWGREAD=/opt/libredwg/bin/dwgread
+LIBREDWG_DWGLAYERS=/opt/libredwg/bin/dwglayers
 DWG_CONVERTER_LIBREOFFICE=/usr/bin/soffice
 DWG_CONVERTER_IMAGEMAGICK=/usr/local/bin/magick
 ```
@@ -73,5 +74,7 @@ $path = $thumbnail->storeAs(
 - [安裝與驗證外部工具](./external-tools)
 - [將 DWG 轉換為 DXF](./dxf-conversion)
 - [建立圖片預覽](./image-previews)
+- [輸出結構 JSON](./structural-json)
+- [查詢圖層資料](./layers)
 - [選擇輸入並交付輸出](./inputs-and-outputs)
 - [處理錯誤](./errors-and-troubleshooting)

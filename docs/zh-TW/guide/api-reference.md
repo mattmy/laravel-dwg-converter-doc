@@ -9,6 +9,7 @@ Dwg::thumbnail(UploadedFile|string|DwgBinary $source): ThumbnailExtraction
 Dwg::toDxf(UploadedFile|string|DwgBinary $source): DxfConversion
 Dwg::toJson(UploadedFile|string|DwgBinary $source): JsonConversion
 Dwg::toImage(UploadedFile|string|DwgBinary $source): ImageConversion
+Dwg::layers(UploadedFile|string|DwgBinary $source): LayerReading
 ```
 
 每個方法只指定來源，不會讀寫檔案或執行轉換，並回傳新的操作物件。請參考[輸入與輸出](./inputs-and-outputs)。
@@ -54,6 +55,16 @@ convert(): DwgOutput
 
 - `ImageFormat`：`PNG`、`JPEG`、`WEBP`。
 - `ImageResolution`：`HIGH`、`MEDIUM`、`LOW`。
+
+## LayerReading
+
+```php
+read(): Collection<int, DwgLayer>
+```
+
+回傳 `Collection<int, DwgLayer>`，可重複使用，不需要呼叫 `output()` 或 `storeAs()`。
+`DwgLayer` 提供唯讀欄位：`name: string`、`isFrozen: bool`、`isOff: bool`、`isLocked: bool`。
+篩選方式與狀態說明見[圖層資料查詢](./layers)。
 
 ## DwgBinary
 

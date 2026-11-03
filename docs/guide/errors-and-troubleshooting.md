@@ -66,6 +66,12 @@ does not repair it. See [thumbnail validation](./thumbnails#validation-boundary)
 Check `$exception->getPrevious()`: if it is a `JsonException` with code `JSON_ERROR_DEPTH`, the JSON was too
 deeply nested. That does not necessarily mean its syntax was wrong.
 
+## Layer query failure
+
+`layers_invalid` means the tool returned invalid UTF-8 or malformed layer records. The entire query fails,
+without partial results or automatic encoding conversion. An empty Collection is returned only when the
+tool succeeds without returning data. See [Reading layer data](./layers).
+
 ## Storage failure
 
 An explicit filename must be a safe basename. The package appends or normalizes the trusted output extension.

@@ -16,6 +16,7 @@ php artisan vendor:publish --tag=dwg-converter-config
 | `executables.dwgbmp` | `LIBREDWG_DWGBMP` | `thumbnail()` |
 | `executables.dwg2dxf` | `LIBREDWG_DWG2DXF` | `toDxf()`, `toImage()` |
 | `executables.dwgread` | `LIBREDWG_DWGREAD` | `toJson()` |
+| `executables.dwglayers` | `LIBREDWG_DWGLAYERS` | `layers()` |
 | `executables.libreoffice` | `DWG_CONVERTER_LIBREOFFICE` | `toImage()` |
 | `executables.imagemagick` | `DWG_CONVERTER_IMAGEMAGICK` | `toImage()` |
 
@@ -25,13 +26,19 @@ These settings are under `dwg-converter` in Laravel, for example `config('dwg-co
 Only executable paths have the environment variables listed above; edit the published config for other settings.
 Publishing is optional when you only need to set those environment variables.
 
+If an older published config is missing `dwglayers`, add this entry to its `executables` array:
+
+```php
+'dwglayers' => env('LIBREDWG_DWGLAYERS', 'dwglayers'),
+```
+
 ## Runtime settings
 
 | Config key | Default | Effect |
 |---|---:|---|
-| `timeout` | `60` seconds | Applies separately to each conversion process |
+| `timeout` | `60` seconds | Timeout for each conversion or query process |
 | `max_input_bytes` | 200 MiB | Maximum DWG snapshot size |
-| `max_output_bytes` | 512 MiB | General output and intermediate-artifact limit |
+| `max_output_bytes` | 512 MiB | Maximum size of output files, intermediate artifacts, and layer data |
 | `max_json_output_bytes` | 64 MiB | JSON-specific output limit |
 | `temporary_directory` | Laravel framework storage | Root for package-owned workspaces |
 
@@ -39,8 +46,11 @@ Byte limits are measured in bytes (1 MiB = 1,048,576 bytes). `timeout` must be a
 seconds. `temporary_directory` must be an absolute local path writable by the worker; the default is
 `storage_path('framework/laravel-dwg-converter')`.
 
-An image operation can run three conversion processes, and every command availability probe has its own
-short timeout. Its total wall time can therefore exceed one configured `timeout` value.
+Each tool availability check has a separate 10-second timeout, so an operation can take longer than
+`timeout`. Image conversion can run up to three conversion processes.
+
+For layer queries, `max_output_bytes` counts the bytes returned by the tool. The process stops as soon as
+incoming data exceeds the limit.
 
 ## Disabling byte limits
 

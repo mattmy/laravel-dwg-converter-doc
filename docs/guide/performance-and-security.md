@@ -24,6 +24,7 @@ formats and delegates enabled in your environment.
 - `output()` loads the complete artifact into PHP memory.
 - JSON validation reads the complete JSON artifact and JSON may be much larger than the source DWG.
 - Image conversion creates intermediate artifacts and can run up to three conversion processes.
+- Layer queries hold both tool output and a Collection in memory; `max_output_bytes` does not cap PHP memory use.
 
 Keep positive input/output limits for untrusted sources. If limits are disabled, enforce equivalent worker
 memory and disk quotas.
@@ -51,3 +52,5 @@ for troubleshooting and how cleanup failures affect your operation.
 Avoid adding source bytes, complete JSON, user filenames, or server paths to application log messages.
 Public exceptions expose sanitized context, but full exception reports may include paths in previous exceptions
 or stack traces. Restrict log access and follow your data-retention policies.
+
+For layer queries, `context()` excludes layer names and raw tool output.
