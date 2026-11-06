@@ -84,3 +84,9 @@ $bytes = $result->output();
 
 `layers()->read()` 回傳一般的 `Collection<int, DwgLayer>`，可以重複篩選與計數，不受一次性輸出限制。
 使用範例見[圖層資料查詢](./layers)。
+
+## 圖元查詢 {#entity-queries}
+
+`entities()->read()` 回傳 `DwgEntityQueryResult`，其 `entities` 是可重複篩選的 `DwgEntityCollection`。
+不需要 `output()` 或 `storeAs()`；讀取完成前就會嘗試清理暫存檔，清理失敗仍依上述警告規則處理。
+範例見[圖元資料查詢](./entities)。

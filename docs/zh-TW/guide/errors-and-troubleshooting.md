@@ -58,7 +58,7 @@ try {
 
 ## JSON 驗證失敗
 
-`json_invalid` 可能是 JSON 語法有誤，也可能是巢狀深度超過 PHP 原生的 `depth = 512` 限制。
+`json_invalid` 可能是產物讀取失敗、JSON 語法有誤，也可能是巢狀深度超過 PHP 原生的 `depth = 512` 限制。
 請查看 `$exception->getPrevious()`：如果是錯誤碼為 `JSON_ERROR_DEPTH` 的 `JsonException`，
 就代表內容過深，不一定是語法錯誤。
 
@@ -80,3 +80,13 @@ try {
 
 暫存檔可能殘留，套件不會重試清理。記錄警告時發生的錯誤也不會中斷操作。
 記錄內容見[日誌與隱私](./performance-and-security#logging-與隱私)。
+
+## 圖元查詢 {#entity-queries}
+
+`entities_invalid` 表示無法讀取 JSON 產物、JSON 無效，或缺少必要的圖元資料結構。
+根節點須為物件，`OBJECTS` 須為陣列（可以是 `[]`，不能以 `{}` 代替）；`HEADER` 可省略，缺少單位資訊時記入診斷。
+JSON 解碼或讀取拋出的原始例外，可由 `getPrevious()` 查看；缺失或空產物則為 `output_missing`。
+
+單筆 `issues` 與整次 `diagnostics` 是正常回傳資料的一部分，不會自動讓查詢失敗。
+如何判讀請參考[看懂查詢結果](./entities#看懂查詢結果)。
+圖層與圖元查詢都會省略失敗診斷中的原始 stderr，避免洩漏私有名稱。

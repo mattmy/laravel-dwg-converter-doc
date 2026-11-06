@@ -15,7 +15,7 @@ php artisan vendor:publish --tag=dwg-converter-config
 |---|---|---|
 | `executables.dwgbmp` | `LIBREDWG_DWGBMP` | `thumbnail()` |
 | `executables.dwg2dxf` | `LIBREDWG_DWG2DXF` | `toDxf()`, `toImage()` |
-| `executables.dwgread` | `LIBREDWG_DWGREAD` | `toJson()` |
+| `executables.dwgread` | `LIBREDWG_DWGREAD` | `toJson()`, `entities()` |
 | `executables.dwglayers` | `LIBREDWG_DWGLAYERS` | `layers()` |
 | `executables.libreoffice` | `DWG_CONVERTER_LIBREOFFICE` | `toImage()` |
 | `executables.imagemagick` | `DWG_CONVERTER_IMAGEMAGICK` | `toImage()` |
@@ -25,12 +25,6 @@ Only the commands required by the selected operation are checked.
 These settings are under `dwg-converter` in Laravel, for example `config('dwg-converter.timeout')`.
 Only executable paths have the environment variables listed above; edit the published config for other settings.
 Publishing is optional when you only need to set those environment variables.
-
-If an older published config is missing `dwglayers`, add this entry to its `executables` array:
-
-```php
-'dwglayers' => env('LIBREDWG_DWGLAYERS', 'dwglayers'),
-```
 
 ## Runtime settings
 
@@ -75,3 +69,9 @@ Use LibreOffice's console launcher and a short absolute temporary path:
 ],
 'temporary_directory' => 'C:/dwg-tmp',
 ```
+
+## Entity queries {#entity-queries}
+
+`entities()->read()` does not read, validate, or apply `max_input_bytes`, `max_output_bytes`, or
+`max_json_output_bytes`, even when set to positive values. Timeout, command paths, and `temporary_directory`
+still apply; other operations keep their limits. See [entity query resources](./performance-and-security#entity-queries).

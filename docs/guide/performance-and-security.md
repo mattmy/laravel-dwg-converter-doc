@@ -54,3 +54,15 @@ Public exceptions expose sanitized context, but full exception reports may inclu
 or stack traces. Restrict log access and follow your data-retention policies.
 
 For layer queries, `context()` excludes layer names and raw tool output.
+
+## Entity queries {#entity-queries}
+
+Entity queries generate, read, and decode the full JSON before building relationship indices and result data.
+`onlyLayers()` skips detailed parsing of excluded entities; it cannot avoid the full JSON and indexing costs.
+The three byte limits do not apply. Use deployment controls for worker memory and disk usage.
+Process timeout and PHP's native JSON depth of `512` still apply; results are not truncated to fit memory.
+Out-of-memory termination or an OS kill may prevent exceptions and temporary cleanup.
+
+Numbers come from LibreDWG's JSON. The checked writer uses `%.14f`: `1e-15` can become `0`, and
+`1.000000000000001` can become `1` before PHP receives them. The package adds no rounding and cannot detect
+or restore that upstream precision loss. Valid zero values are still retained.

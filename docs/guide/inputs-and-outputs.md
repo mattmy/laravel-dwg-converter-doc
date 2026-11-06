@@ -91,3 +91,9 @@ used, and a logging failure does not interrupt the operation. See [cleanup warni
 
 `layers()->read()` returns a regular `Collection<int, DwgLayer>` that you can filter and count repeatedly,
 without one-time output restrictions. See [Reading layer data](./layers) for examples.
+
+## Entity queries {#entity-queries}
+
+`entities()->read()` returns `DwgEntityQueryResult`, with a reusable `DwgEntityCollection` in `entities`.
+There is no `output()` or `storeAs()` step. Cleanup is attempted before returning, with the same warning
+behavior described above. See [Reading stored entities](./entities) for examples.

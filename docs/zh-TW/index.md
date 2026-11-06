@@ -26,3 +26,5 @@ features:
 [外部命令](/zh-TW/guide/external-tools)。
 
 需要取得圖層名稱與狀態時，請參考[圖層資料查詢](/zh-TW/guide/layers)。
+
+[圖元資料查詢](guide/entities)

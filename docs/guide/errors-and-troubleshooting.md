@@ -62,7 +62,7 @@ does not repair it. See [thumbnail validation](./thumbnails#validation-boundary)
 
 ## JSON validation failure
 
-`json_invalid` can mean either a syntax error or too much nesting for PHP's native `depth = 512` limit.
+`json_invalid` can mean an artifact read failure, a syntax error or too much nesting for PHP's native `depth = 512` limit.
 Check `$exception->getPrevious()`: if it is a `JsonException` with code `JSON_ERROR_DEPTH`, the JSON was too
 deeply nested. That does not necessarily mean its syntax was wrong.
 
@@ -86,3 +86,14 @@ operation itself failed, you still receive its original exception.
 
 Temporary files may remain, and the package does not retry cleanup. A logging failure also does not interrupt
 the operation. See [logging and privacy](./performance-and-security#logging-and-privacy) for what gets logged.
+
+## Entity queries {#entity-queries}
+
+`entities_invalid` means the JSON artifact could not be read, the JSON was invalid, or its required entity
+structure was missing. The root must be an object and `OBJECTS` an array (`[]` is valid; `{}` is not).
+`HEADER` is optional; missing unit information becomes a diagnostic.
+Use `getPrevious()` to inspect an original JSON decoding or read exception. Missing or empty artifacts use `output_missing`.
+
+Local `issues` and query `diagnostics` are part of a normal result, not automatic query failures.
+See [Understand the result](./entities#understand-the-result).
+Layer and entity queries omit raw stderr from failure context to avoid exposing private names.

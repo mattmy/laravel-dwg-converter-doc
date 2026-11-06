@@ -10,6 +10,7 @@ downloaded or bundled by the package. Install only the commands required by the 
 | `Dwg::thumbnail(...)->extract()` | Embedded BMP, PNG, or WMF preview | LibreDWG `dwgbmp` |
 | `Dwg::toDxf(...)->convert()` | ASCII DXF | LibreDWG `dwg2dxf` |
 | `Dwg::toJson(...)->convert()` | LibreDWG structural JSON | LibreDWG `dwgread` with JSON output |
+| `Dwg::entities(...)->read()` | Entity data and diagnostics | LibreDWG `dwgread` with JSON output |
 | `Dwg::layers(...)->read()` | Layer data Collection | LibreDWG `dwglayers --flags` |
 | `Dwg::toImage(...)->convert()` | PNG, JPEG, or WebP preview | LibreDWG `dwg2dxf`, LibreOffice 7.4+ `soffice`, ImageMagick 7 `magick` |
 
@@ -143,7 +144,14 @@ before processing untrusted files.
 Thumbnail only   → dwgbmp
 DXF only         → dwg2dxf
 JSON only        → dwgread with JSON output
+Entity data → dwgread with JSON output
 Layer data only  → dwglayers with --flags
 Image previews   → dwg2dxf + soffice 7.4+ + magick 7
 All features     → all commands above
 ```
+
+## Entity queries {#entity-queries}
+
+`entities()->read()` uses the same `dwgread` / `LIBREDWG_DWGREAD` as JSON export; no additional command is needed.
+Use a traceable build containing the LibreDWG 0.14.1 JSON memory-disclosure fix; a version string of `0.14`
+alone does not prove it is patched. See [Reading stored entities](./entities).

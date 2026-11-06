@@ -21,6 +21,7 @@ Each operation has separate external requirements:
 | Embedded thumbnail | `dwgbmp` |
 | DXF | `dwg2dxf` |
 | Structural JSON | `dwgread` with JSON output support |
+| Entity data | `dwgread` with JSON output support |
 | Layer data | `dwglayers --flags` |
 | PNG, JPEG, or WebP preview | `dwg2dxf`, LibreOffice 7.4+ `soffice`, ImageMagick 7 `magick` |
 
@@ -83,3 +84,8 @@ no embedded preview; handle `DwgOperationFailed` when that result is expected.
 - [Read layer data](./layers)
 - [Choose inputs and deliver outputs](./inputs-and-outputs)
 - [Handle errors](./errors-and-troubleshooting)
+
+## Entity queries {#entity-queries}
+
+Use `Dwg::entities($source)->read()` for filtering entities and reading geometry, blocks,
+and attributes. See [Reading stored entities](./entities).

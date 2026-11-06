@@ -10,6 +10,7 @@ Laravel DWG Converter 會執行安裝於本機環境的命令列工具。它們�
 | `Dwg::thumbnail(...)->extract()` | 內嵌 BMP、PNG 或 WMF 預覽 | LibreDWG `dwgbmp` |
 | `Dwg::toDxf(...)->convert()` | ASCII DXF | LibreDWG `dwg2dxf` |
 | `Dwg::toJson(...)->convert()` | LibreDWG 結構 JSON | 支援 JSON 輸出的 LibreDWG `dwgread` |
+| `Dwg::entities(...)->read()` | 圖元資料與診斷 | LibreDWG `dwgread`，需支援 JSON |
 | `Dwg::layers(...)->read()` | 圖層資料 Collection | LibreDWG `dwglayers --flags` |
 | `Dwg::toImage(...)->convert()` | PNG、JPEG 或 WebP 預覽 | LibreDWG `dwg2dxf`、LibreOffice 7.4+ `soffice`、ImageMagick 7 `magick` |
 
@@ -80,7 +81,7 @@ RPM 壓縮檔，解壓並安裝 `RPMS` 資料夾內的 RPM，再設定產生的 
 DWG_CONVERTER_LIBREOFFICE="C:/Program Files/LibreOffice/program/soffice.com"
 ```
 
-請使用 `soffice.com`，不要使用可能回報成功但未產生無圖形介面模式的輸出的 `soffice.exe`。另外請將
+`soffice.exe` 可能回報成功卻沒有產檔，請使用 `soffice.com`。另外請將
 `temporary_directory` 設為較短的絕對路徑，避免 Windows 路徑過長造成失敗。
 
 ## ImageMagick
@@ -140,7 +141,14 @@ DWG_CONVERTER_IMAGEMAGICK="C:/Program Files/ImageMagick-7.x.x-Q16-HDRI/magick.ex
 只擷取縮圖       → dwgbmp
 只輸出 DXF       → dwg2dxf
 只輸出 JSON      → 支援 JSON 輸出的 dwgread
+只查詢圖元 → 支援 JSON 輸出的 dwgread
 只查詢圖層       → 支援 --flags 的 dwglayers
 輸出圖片預覽     → dwg2dxf + soffice 7.4+ + magick 7
 使用全部功能     → 上述全部命令
 ```
+
+## 圖元查詢 {#entity-queries}
+
+`entities()->read()` 與 JSON 匯出共用 `dwgread`／`LIBREDWG_DWGREAD`，不需要其他命令。
+請確認 build 來源可追溯，且包含 LibreDWG 0.14.1 的 JSON 記憶體洩漏修補；版本只顯示 `0.14` 不足以證明已修補。
+使用方式見[圖元資料查詢](./entities)。

@@ -15,7 +15,7 @@ php artisan vendor:publish --tag=dwg-converter-config
 |---|---|---|
 | `executables.dwgbmp` | `LIBREDWG_DWGBMP` | `thumbnail()` |
 | `executables.dwg2dxf` | `LIBREDWG_DWG2DXF` | `toDxf()`、`toImage()` |
-| `executables.dwgread` | `LIBREDWG_DWGREAD` | `toJson()` |
+| `executables.dwgread` | `LIBREDWG_DWGREAD` | `toJson()`、`entities()` |
 | `executables.dwglayers` | `LIBREDWG_DWGLAYERS` | `layers()` |
 | `executables.libreoffice` | `DWG_CONVERTER_LIBREOFFICE` | `toImage()` |
 | `executables.imagemagick` | `DWG_CONVERTER_IMAGEMAGICK` | `toImage()` |
@@ -67,3 +67,9 @@ JSON 會採用 `max_output_bytes` 與 `max_json_output_bytes` 中較小的啟用
 ],
 'temporary_directory' => 'C:/dwg-tmp',
 ```
+
+## 圖元查詢 {#entity-queries}
+
+`entities()->read()` 不讀取、不驗證或套用 `max_input_bytes`、`max_output_bytes`、`max_json_output_bytes`，
+即使設定正整數也不會限制圖元查詢大小。`timeout`、工具路徑與 `temporary_directory` 仍適用；其他操作的上限不變。
+大檔處理請參考[圖元查詢的資源限制](./performance-and-security#entity-queries)。

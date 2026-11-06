@@ -20,6 +20,7 @@ Laravel 13 需要 PHP 8.3 或更新版本。
 | 內嵌縮圖 | `dwgbmp` |
 | DXF | `dwg2dxf` |
 | 結構 JSON | 支援 JSON 輸出的 `dwgread` |
+| 圖元資料查詢 | 支援 JSON 輸出的 `dwgread` |
 | 圖層資料查詢 | `dwglayers --flags` |
 | PNG、JPEG 或 WebP 預覽 | `dwg2dxf`、LibreOffice 7.4+ `soffice`、ImageMagick 7 `magick` |
 
@@ -78,3 +79,8 @@ $path = $thumbnail->storeAs(
 - [查詢圖層資料](./layers)
 - [選擇輸入並交付輸出](./inputs-and-outputs)
 - [處理錯誤](./errors-and-troubleshooting)
+
+## 圖元查詢 {#entity-queries}
+
+使用 `Dwg::entities($source)->read()`，可篩選圖元並取得幾何、圖塊與屬性資料。
+使用方式見[圖元資料查詢](./entities)。
