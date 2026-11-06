@@ -82,10 +82,6 @@ no embedded preview; handle `DwgOperationFailed` when that result is expected.
 - [Create an image preview](./image-previews)
 - [Export structural JSON](./structural-json)
 - [Read layer data](./layers)
+- [Read and filter entity data](./entities)
 - [Choose inputs and deliver outputs](./inputs-and-outputs)
 - [Handle errors](./errors-and-troubleshooting)
-
-## Entity queries {#entity-queries}
-
-Use `Dwg::entities($source)->read()` for filtering entities and reading geometry, blocks,
-and attributes. See [Reading stored entities](./entities).

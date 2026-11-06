@@ -77,10 +77,6 @@ $path = $thumbnail->storeAs(
 - [建立圖片預覽](./image-previews)
 - [輸出結構 JSON](./structural-json)
 - [查詢圖層資料](./layers)
+- [讀取與篩選圖元資料](./entities)
 - [選擇輸入並交付輸出](./inputs-and-outputs)
 - [處理錯誤](./errors-and-troubleshooting)
-
-## 圖元查詢 {#entity-queries}
-
-使用 `Dwg::entities($source)->read()`，可篩選圖元並取得幾何、圖塊與屬性資料。
-使用方式見[圖元資料查詢](./entities)。
