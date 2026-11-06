@@ -1,7 +1,7 @@
 # Inputs and outputs
 
 All operations accept the same three source types. Conversions and thumbnail extraction return a one-time
-`DwgOutput`; layer queries return a reusable Collection.
+`DwgOutput`; layer and entity queries return reusable data.
 
 ## Uploaded files
 

@@ -1,7 +1,7 @@
 # Getting started
 
 Laravel DWG Converter lets a Laravel application extract a DWG's embedded thumbnail or export the file as
-DXF, structural JSON, PNG, JPEG, or WebP. You can also read layer names and states. Install only the external
+DXF, structural JSON, PNG, JPEG, or WebP. You can also read layer and entity data. Install only the external
 commands needed by the features you use.
 
 ## Requirements

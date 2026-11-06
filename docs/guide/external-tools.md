@@ -31,7 +31,7 @@ dwglayers --version
 dwglayers --help
 ```
 
-Layer queries require `--flags`; check that `dwglayers --help` lists this option.
+Layer queries require `--flags`, plus `--on` when using `onlyOn()`. Check that `dwglayers --help` lists the options you need.
 
 If they are not on `PATH`, set their absolute paths:
 
@@ -137,18 +137,6 @@ DWG_CONVERTER_IMAGEMAGICK="C:/Program Files/ImageMagick-7.x.x-Q16-HDRI/magick.ex
 
 In every environment, `magick --version` must report ImageMagick 7. Review ImageMagick's security policy
 before processing untrusted files.
-
-## Installation checklist
-
-```text
-Thumbnail only   → dwgbmp
-DXF only         → dwg2dxf
-JSON only        → dwgread with JSON output
-Entity data → dwgread with JSON output
-Layer data only  → dwglayers with --flags
-Image previews   → dwg2dxf + soffice 7.4+ + magick 7
-All features     → all commands above
-```
 
 ## Entity queries {#entity-queries}
 

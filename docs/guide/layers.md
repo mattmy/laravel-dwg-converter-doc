@@ -19,6 +19,18 @@ $names = $layers->pluck('name');
 The result is a Laravel `Collection<int, DwgLayer>`. Filtering, counting, and name lookup use the data already
 read and never rerun the tool. `count()` counts layers, not entities.
 
+## Read only ON layers
+
+```php
+$on = Dwg::layers($source)->onlyOn()->read();
+```
+
+`onlyOn()` asks the tool to return layers that are neither off nor frozen. Locked layers can still be included;
+this does not guarantee entity visibility. It returns a new operation without changing the original and reads
+the source only when you call `read()`.
+
+This option requires `--on` support; see [External tools](./external-tools#libredwg) to check your installation.
+
 ## Layer fields
 
 Each `Mattmy\DwgConverter\DwgLayer` exposes these fields:

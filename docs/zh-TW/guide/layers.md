@@ -19,6 +19,17 @@ $names = $layers->pluck('name');
 結果是 Laravel 的 `Collection<int, DwgLayer>`。篩選、計數與查詢名稱都使用已讀取的資料，不會重新執行工具。
 `count()` 計算的是圖層數量，不是圖元數量。
 
+## 只讀取開啟的圖層
+
+```php
+$on = Dwg::layers($source)->onlyOn()->read();
+```
+
+`onlyOn()` 讓工具只回傳未關閉且未凍結的圖層，鎖定圖層仍可包含；這不保證圖元實際可見。
+它會回傳新的操作物件，不影響原操作，呼叫 `read()` 才讀取來源。
+
+此選項需要工具支援 `--on`，安裝檢查見[外部工具](./external-tools#libredwg)。
+
 ## 圖層欄位
 
 每筆 `Mattmy\DwgConverter\DwgLayer` 提供下列欄位：

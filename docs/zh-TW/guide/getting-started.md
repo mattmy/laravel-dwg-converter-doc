@@ -1,7 +1,7 @@
 # 開始使用
 
 Laravel DWG Converter 讓 Laravel 應用擷取 DWG 內嵌縮圖，或將檔案輸出為 DXF、結構 JSON、PNG、
-JPEG 或 WebP，也能查詢圖層名稱與狀態。只需安裝實際使用功能所需的外部命令。
+JPEG 或 WebP，也能查詢圖層與圖元資料。只需安裝實際使用功能所需的外部命令。
 
 ## 系統需求
 

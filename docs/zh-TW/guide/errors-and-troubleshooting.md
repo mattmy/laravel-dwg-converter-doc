@@ -51,7 +51,7 @@ try {
 
 ## 沒有內嵌縮圖
 
-`thumbnail_not_found` 是有效 DWG 沒有預覽時的正常結果。需要渲染預覽時請使用 `toImage()`。
+DWG 沒有內嵌預覽時，會拋出 `DwgOperationFailed`，原因為 `thumbnail_not_found`。需要渲染預覽時請使用 `toImage()`。
 
 `thumbnail_invalid` 表示有找到預覽，但沒有通過 BMP／PNG／WMF 基本結構檢查。套件不會修補它，
 詳見[縮圖驗證邊界](./thumbnails#驗證邊界)。
@@ -67,6 +67,9 @@ try {
 `layers_invalid` 表示工具回傳的資料不是有效的 UTF-8，或圖層紀錄格式不符。整次查詢會失敗，
 不會回傳部分資料或自動轉碼。工具成功執行但沒有回傳資料時，才會得到空 Collection。
 詳見[圖層資料查詢](./layers)。
+
+使用 `onlyOn()` 時，如果工具不支援 `--on`，會拋出 `LibreDwgUnavailable`，原因為 `unsupported_tool_capability`。
+請更新工具，或移除此選項以讀取全部圖層。
 
 ## Storage 失敗
 

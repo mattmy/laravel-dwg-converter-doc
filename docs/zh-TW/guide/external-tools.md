@@ -31,7 +31,7 @@ dwglayers --version
 dwglayers --help
 ```
 
-圖層查詢需要 `--flags`；請確認 `dwglayers --help` 有列出這個選項。
+圖層查詢需要 `--flags`；使用 `onlyOn()` 時還需要 `--on`。請確認 `dwglayers --help` 有列出所需選項。
 
 不在 `PATH` 時請設定絕對路徑：
 
@@ -134,18 +134,6 @@ DWG_CONVERTER_IMAGEMAGICK="C:/Program Files/ImageMagick-7.x.x-Q16-HDRI/magick.ex
 
 每個環境的 `magick --version` 都必須顯示 ImageMagick 7。處理不可信檔案前，也請檢查 ImageMagick
 安全政策。
-
-## 安裝組合速查
-
-```text
-只擷取縮圖       → dwgbmp
-只輸出 DXF       → dwg2dxf
-只輸出 JSON      → 支援 JSON 輸出的 dwgread
-只查詢圖元 → 支援 JSON 輸出的 dwgread
-只查詢圖層       → 支援 --flags 的 dwglayers
-輸出圖片預覽     → dwg2dxf + soffice 7.4+ + magick 7
-使用全部功能     → 上述全部命令
-```
 
 ## 圖元查詢 {#entity-queries}
 

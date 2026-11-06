@@ -26,6 +26,8 @@ formats and delegates enabled in your environment.
 - Image conversion creates intermediate artifacts and can run up to three conversion processes.
 - Layer queries hold both tool output and a Collection in memory; `max_output_bytes` does not cap PHP memory use.
 
+`onlyOn()` reduces returned layer data and PHP parsing work, but the tool still decodes the whole DWG; no fixed speedup is guaranteed.
+
 Keep positive input/output limits for untrusted sources. If limits are disabled, enforce equivalent worker
 memory and disk quotas.
 

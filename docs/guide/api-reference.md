@@ -10,6 +10,7 @@ Dwg::toDxf(UploadedFile|string|DwgBinary $source): DxfConversion
 Dwg::toJson(UploadedFile|string|DwgBinary $source): JsonConversion
 Dwg::toImage(UploadedFile|string|DwgBinary $source): ImageConversion
 Dwg::layers(UploadedFile|string|DwgBinary $source): LayerReading
+Dwg::entities(UploadedFile|string|DwgBinary $source): EntityReading
 ```
 
 Each method binds a source without I/O and returns a new operation. See [Inputs and outputs](./inputs-and-outputs).
@@ -61,10 +62,12 @@ Every option returns a new operation and preserves the other selections. See
 ## LayerReading
 
 ```php
+onlyOn(): self
 read(): Collection<int, DwgLayer>
 ```
 
-Returns a reusable `Collection<int, DwgLayer>` without an `output()` or `storeAs()` step.
+`onlyOn()` returns a new reading operation for layers that are neither off nor frozen, including locked layers.
+`read()` returns a reusable `Collection<int, DwgLayer>` without an `output()` or `storeAs()` step.
 `DwgLayer` exposes read-only fields: `name: string`, `isFrozen: bool`, `isOff: bool`, and `isLocked: bool`.
 See [Reading layer data](./layers) for filtering and state meanings.
 
@@ -114,16 +117,12 @@ For changes between releases, see the [Changelog](https://github.com/mattmy/lara
 Start with [Reading stored entities](./entities).
 
 ```php
-Dwg::entities(UploadedFile|string|DwgBinary $source): EntityReading
-
 // EntityReading
 onlyLayers(string|array $layers, string ...$additionalLayers): self
 read(): DwgEntityQueryResult
 ```
 
-`onlyLayers()` accepts a string or a list of strings, optionally followed by more strings.
-Invalid lists (non-string items, nested lists, or non-list keys) throw `InvalidArgumentException` before reading.
-The first argument is required; missing arguments or incorrect native types cause PHP argument/type errors.
+`onlyLayers()` accepts one or more layer names, or a list of strings. Arrays must be flat lists with consecutive integer keys; invalid lists throw `InvalidArgumentException`.
 
 ### Filters
 
@@ -138,10 +137,9 @@ referencingBlock(string $name): DwgEntityCollection
 withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
 ```
 
-Both `DwgEntityQueryResult` and `DwgEntityCollection` expose these methods. Collection methods return `static`;
-result methods return `DwgEntityCollection<int, DwgEntity>`. Filters preserve keys, order, and entity objects.
-They use the current collection without caching; previously returned collections do not follow later changes.
-`withIssue()` returns each matching entity once.
+Call these filters on the query result or entity collection and chain them to narrow the selection.
+Filters preserve keys, order, and entity objects without changing the source collection. Previously returned
+collections do not follow later changes. Collection methods return `static`.
 
 Option types are in `Mattmy\DwgConverter`:
 

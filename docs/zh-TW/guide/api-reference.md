@@ -10,6 +10,7 @@ Dwg::toDxf(UploadedFile|string|DwgBinary $source): DxfConversion
 Dwg::toJson(UploadedFile|string|DwgBinary $source): JsonConversion
 Dwg::toImage(UploadedFile|string|DwgBinary $source): ImageConversion
 Dwg::layers(UploadedFile|string|DwgBinary $source): LayerReading
+Dwg::entities(UploadedFile|string|DwgBinary $source): EntityReading
 ```
 
 每個方法只指定來源，不會讀寫檔案或執行轉換，並回傳新的操作物件。請參考[輸入與輸出](./inputs-and-outputs)。
@@ -59,10 +60,12 @@ convert(): DwgOutput
 ## LayerReading
 
 ```php
+onlyOn(): self
 read(): Collection<int, DwgLayer>
 ```
 
-回傳 `Collection<int, DwgLayer>`，可重複使用，不需要呼叫 `output()` 或 `storeAs()`。
+`onlyOn()` 回傳新的讀取操作，只選取未關閉且未凍結的圖層；鎖定圖層仍可包含。
+`read()` 回傳 `Collection<int, DwgLayer>`，可重複使用，不需要呼叫 `output()` 或 `storeAs()`。
 `DwgLayer` 提供唯讀欄位：`name: string`、`isFrozen: bool`、`isOff: bool`、`isLocked: bool`。
 篩選方式與狀態說明見[圖層資料查詢](./layers)。
 
@@ -112,16 +115,12 @@ context(): array
 使用方式見[圖元資料查詢](./entities)。
 
 ```php
-Dwg::entities(UploadedFile|string|DwgBinary $source): EntityReading
-
 // EntityReading
 onlyLayers(string|array $layers, string ...$additionalLayers): self
 read(): DwgEntityQueryResult
 ```
 
-`onlyLayers()` 接受字串或一維字串清單，後面可接其他字串。
-含非字串、巢狀陣列或非連續整數索引的清單，會在讀取前拋出 `InvalidArgumentException`。
-首參數必填；缺少參數或違反原生型別時，由 PHP 回報參數／型別錯誤。
+`onlyLayers()` 接受一個或多個圖層名稱，也可傳入字串清單。陣列必須是一維、連續索引的字串清單，否則拋出 `InvalidArgumentException`。
 
 ### 篩選方法
 
@@ -136,9 +135,8 @@ referencingBlock(string $name): DwgEntityCollection
 withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
 ```
 
-`DwgEntityQueryResult` 與 `DwgEntityCollection` 都提供這些方法。集合方法回傳 `static`，
-結果方法回傳 `DwgEntityCollection<int, DwgEntity>`。篩選保留索引、順序與原圖元物件。
-每次以目前集合為準，不快取；先前取得的集合不會隨之更新。`withIssue()` 每筆符合圖元只回傳一次。
+這些方法可從查詢結果或圖元集合呼叫，並繼續串接。每次篩選都保留索引、順序與圖元物件，
+不修改來源集合；先前取得的結果也不會隨來源更新。集合方法回傳 `static`。
 
 選項型別皆位於 `Mattmy\DwgConverter`：
 

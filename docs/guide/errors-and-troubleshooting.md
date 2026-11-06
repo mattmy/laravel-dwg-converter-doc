@@ -54,8 +54,8 @@ Only troubleshoot the commands used by the failing operation.
 
 ## No embedded thumbnail
 
-`thumbnail_not_found` is a normal result for a valid DWG without a preview. Use `toImage()` if a rendered
-preview is required.
+A DWG without an embedded preview throws `DwgOperationFailed` with reason `thumbnail_not_found`.
+Use `toImage()` if you need a rendered preview.
 
 `thumbnail_invalid` means a preview was found but failed the basic BMP/PNG/WMF structure checks. The package
 does not repair it. See [thumbnail validation](./thumbnails#validation-boundary).
@@ -71,6 +71,9 @@ deeply nested. That does not necessarily mean its syntax was wrong.
 `layers_invalid` means the tool returned invalid UTF-8 or malformed layer records. The entire query fails,
 without partial results or automatic encoding conversion. An empty Collection is returned only when the
 tool succeeds without returning data. See [Reading layer data](./layers).
+
+If the tool lacks `--on`, `onlyOn()` throws `LibreDwgUnavailable` with reason `unsupported_tool_capability`.
+Update the tool or remove this option to read all layers.
 
 ## Storage failure
 
