@@ -108,7 +108,7 @@ and external references are not loaded. Counts are therefore not visible-instanc
 Coordinates keep their original WCS/OCS context; INSERT transforms are not applied. Angles are radians.
 Colors describe stored values or inheritance, not the final display color. Anonymous block names are kept as supplied.
 
-For exact fields and enums, see [Entity API reference](./api-reference#entity-queries).
+For method signatures and filter options, see [Entity API reference](./api-reference#entity-queries).
 Entity queries do not apply the three configured byte limits and still load the full JSON;
 read [entity query resources and precision](./performance-and-security#entity-queries) before processing large files.
 Source, tool, or whole-query failures throw exceptions; see [Errors](./errors-and-troubleshooting#entity-queries).

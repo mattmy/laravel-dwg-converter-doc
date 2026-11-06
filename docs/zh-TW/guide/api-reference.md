@@ -140,67 +140,15 @@ withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
 結果方法回傳 `DwgEntityCollection<int, DwgEntity>`。篩選保留索引、順序與原圖元物件。
 每次以目前集合為準，不快取；先前取得的集合不會隨之更新。`withIssue()` 每筆符合圖元只回傳一次。
 
-### 欄位與 enum
+選項型別皆位於 `Mattmy\DwgConverter`：
 
-型別皆位於 `Mattmy\DwgConverter`。資料物件唯讀，圖元集合本身仍可增減項目。
+- `ofType()`：可用 `DwgEntityType::LINE` 等 enum，或直接傳入 `'LINE'` 等原始類型字串。
+- `withOwnerKind()`：`DwgOwnerKind::MODEL_SPACE`、`PAPER_SPACE`、`BLOCK_DEFINITION`、`UNKNOWN`。
+- `withColorMode()`：`DwgColorMode::ACI`、`TRUE_COLOR`、`BY_LAYER`、`BY_BLOCK`、`UNKNOWN`。
+- `withIssue()`：傳入 `DwgEntityIssueReason`，例如 `DwgEntityIssueReason::TARGET_NOT_FOUND`。
 
-| DTO | readonly 欄位 |
-|---|---|
-| `DwgEntityQueryResult` | `entities: DwgEntityCollection<int, DwgEntity>、diagnostics: list<DwgQueryDiagnostic>、drawingUnits: DwgDrawingUnits` |
-| `DwgEntity` | `type: ?string、handle: ?string、layer: DwgLayerReference、owner: DwgEntityOwner、geometry: 四種幾何的 nullable union、color: DwgColor、block: ?DwgBlockReference、attributes: list<DwgAttribute> 或 null、isComplete: bool、issues: list<DwgEntityIssue>` |
-| DwgLayerReference／DwgBlockReference | handle／name: ?string |
-| DwgEntityOwner | kind: DwgOwnerKind、directHandle／containerHandle／containerName／layoutHandle／layoutName: ?string |
-| DwgAttribute | handle／tag／value: ?string |
-| DwgPoint | x／y: float、z: ?float |
-| DwgDirection | x／y／z: float |
-| DwgScale | x／y／z: ?float |
-| DwgDrawingUnits | code: ?int、status: DwgDrawingUnitStatus |
-| DwgColor | mode: DwgColorMode、aci／rgb: ?int |
-| DwgEntityIssue | reason: DwgEntityIssueReason、field: ?string |
-| DwgQueryDiagnostic | reason: DwgQueryDiagnosticReason、recordCount: ?int |
+### 查詢結果
 
-geometry 為 DwgLineGeometry、DwgCircleGeometry、DwgArcGeometry、DwgInsertGeometry 或 null：
-
-| 類型 | 欄位 |
-|---|---|
-| LINE | start／end: ?DwgPoint、coordinateSystem: DwgCoordinateSystem |
-| CIRCLE | center: ?DwgPoint、radius: ?float、extrusion: ?DwgDirection、coordinateSystem |
-| ARC | center、radius、startAngle／endAngle: ?float、extrusion、coordinateSystem、angleUnit: DwgAngleUnit |
-| INSERT | insertionPoint: ?DwgPoint、scale: ?DwgScale、rotation: ?float、extrusion、coordinateSystem、angleUnit |
-
-| Enum | cases／字串值 |
-|---|---|
-| DwgOwnerKind | MODEL_SPACE=model_space、PAPER_SPACE=paper_space、BLOCK_DEFINITION=block_definition、UNKNOWN=unknown |
-| DwgCoordinateSystem | WCS=wcs、OCS=ocs、UNKNOWN=unknown |
-| DwgAngleUnit | RADIANS=radians |
-| DwgDrawingUnitStatus | SPECIFIED=specified、UNSPECIFIED=unspecified、UNKNOWN=unknown |
-| DwgColorMode | ACI=aci、TRUE_COLOR=true_color、BY_LAYER=by_layer、BY_BLOCK=by_block、UNKNOWN=unknown |
-| DwgEntityType | LINE、CIRCLE、ARC、INSERT、MINSERT、HATCH、SPLINE、LWPOLYLINE；value 與 case 名稱相同 |
-
-### 問題與診斷
-
-`DwgEntityIssueReason` 的值：
-`missing_value`, `invalid_value`, `duplicate_handle`, `missing_reference`, `invalid_reference`,
-`target_not_found`, `ambiguous_reference`, `wrong_target_type`, `reference_cycle`,
-`unsupported_geometry`, `unknown_color`, `incomplete_attributes`.
-
-`field` 指向受影響的公開欄位，例如 `geometry.radius` 或 `owner`。
-`issues` 為空時 `isComplete` 才是 `true`；同筆多個問題仍只算一筆不完整圖元。
-
-`DwgQueryDiagnosticReason` 的值：
-`non_entity_records`, `non_object_records`, `unclassifiable_records`, `unknown_drawing_units`.
-
-前三項計算略過的紀錄，不是遺失圖元數。`recordCount` 為可確認的正整數；非筆數問題為 `null`。
-問題與診斷不含原始工具輸出或私有名稱。
-
-::: details 部分資料與異常來源的處理規則
-
-- handle 為無 `0x`／前導零的十六進位大寫字串。缺少或無效為 `null`，重複紀錄仍保留；關聯有歧義時不任選目標。
-- owner 是圖元所屬容器，`block` 是 INSERT／MINSERT 的目標。所屬未知時仍保留已知 handle；匿名圖塊名稱不還原 effective name。
-- 屬性保留順序、重複 tag、空白與文字型數字。`[]` 表示確認為空；`null` 表示不適用或整份未知。部分可讀時保留已取得項目。
-- 明確提供屬性 vector 時，`num_owned` 必須為符合原始長度的整數，`has_attribs=false` 也一樣。空 vector 缺少有效數量時為未知；數量為 0 時保留 `[]`。若 first／last 參照矛盾，記 `incomplete_attributes`，不追蹤該鏈。
-- vector 重複參照 `[A,A,B]` 仍保留 `[A,A,B]`，並記 `incomplete_attributes`；鏈結清單的實際循環則以 `reference_cycle` 停止。
-- HEADER 空間參照須直接指向唯一 BLOCK_HEADER；指向圖元時回 UNKNOWN／`wrong_target_type`，不繼續追蹤。一般直接 owner 鏈仍可經過圖元。HEADER 已解析所屬時，無效的直接參照只新增 `invalid_reference`，不抹除容器／配置；省略或 null 參照合法，有效直接 handle 則原樣保留，不額外解析目標。
-- LINE 使用 WCS，CIRCLE／ARC／INSERT 使用 OCS；ARC／INSERT 角度為弧度。座標、Z、方向與倍率缺漏不補值；部分幾何仍保留，全部未知才為 `null`。MINSERT 有圖塊／屬性關聯，但未支援幾何。
-- 半徑須大於零；方向須有三個有限分量且不全為零。倍率接受有限的零與負值。ACI 不轉 RGB；RGB 是 24-bit 整數，黑色 0 有效。繼承色合法，缺少 index 不猜 BYBLOCK；不解析透明度或色票。
-:::
+`DwgEntityQueryResult` 提供 `entities`、`drawingUnits` 與 `diagnostics`。
+各筆圖元的 `issues` 描述單筆解析問題；`diagnostics` 描述整次查詢的資訊，有內容不一定表示失敗。
+常用欄位的取值方式與問題判讀，請參考[看懂查詢結果](./entities#看懂查詢結果)。

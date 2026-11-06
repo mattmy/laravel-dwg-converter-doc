@@ -143,67 +143,15 @@ result methods return `DwgEntityCollection<int, DwgEntity>`. Filters preserve ke
 They use the current collection without caching; previously returned collections do not follow later changes.
 `withIssue()` returns each matching entity once.
 
-### Fields and enums
+Option types are in `Mattmy\DwgConverter`:
 
-All types are in `Mattmy\DwgConverter`. Data objects are readonly; the entity collection remains mutable.
+- `ofType()`: use an enum such as `DwgEntityType::LINE`, or an original type string such as `'LINE'`.
+- `withOwnerKind()`: `DwgOwnerKind::MODEL_SPACE`, `PAPER_SPACE`, `BLOCK_DEFINITION`, or `UNKNOWN`.
+- `withColorMode()`: `DwgColorMode::ACI`, `TRUE_COLOR`, `BY_LAYER`, `BY_BLOCK`, or `UNKNOWN`.
+- `withIssue()`: pass a `DwgEntityIssueReason`, such as `DwgEntityIssueReason::TARGET_NOT_FOUND`.
 
-| DTO | Readonly properties |
-|---|---|
-| `DwgEntityQueryResult` | `entities: DwgEntityCollection<int, DwgEntity>, diagnostics: list<DwgQueryDiagnostic>, drawingUnits: DwgDrawingUnits` |
-| `DwgEntity` | `type: ?string, handle: ?string, layer: DwgLayerReference, owner: DwgEntityOwner, geometry: four-type nullable union, color: DwgColor, block: ?DwgBlockReference, attributes: list<DwgAttribute> or null, isComplete: bool, issues: list<DwgEntityIssue>` |
-| DwgLayerReference / DwgBlockReference | handle: ?string, name: ?string |
-| DwgEntityOwner | kind: DwgOwnerKind, directHandle / containerHandle / containerName / layoutHandle / layoutName: ?string |
-| DwgAttribute | handle / tag / value: ?string |
-| DwgPoint | x / y: float, z: ?float |
-| DwgDirection | x / y / z: float |
-| DwgScale | x / y / z: ?float |
-| DwgDrawingUnits | code: ?int, status: DwgDrawingUnitStatus |
-| DwgColor | mode: DwgColorMode, aci / rgb: ?int |
-| DwgEntityIssue | reason: DwgEntityIssueReason, field: ?string |
-| DwgQueryDiagnostic | reason: DwgQueryDiagnosticReason, recordCount: ?int |
+### Query result
 
-Geometry is DwgLineGeometry, DwgCircleGeometry, DwgArcGeometry, DwgInsertGeometry or null:
-
-| Type | Properties |
-|---|---|
-| LINE | start / end: ?DwgPoint, coordinateSystem: DwgCoordinateSystem |
-| CIRCLE | center: ?DwgPoint, radius: ?float, extrusion: ?DwgDirection, coordinateSystem |
-| ARC | center, radius, startAngle / endAngle: ?float, extrusion, coordinateSystem, angleUnit: DwgAngleUnit |
-| INSERT | insertionPoint: ?DwgPoint, scale: ?DwgScale, rotation: ?float, extrusion, coordinateSystem, angleUnit |
-
-| Enum | Cases and string values |
-|---|---|
-| DwgOwnerKind | MODEL_SPACE=model_space, PAPER_SPACE=paper_space, BLOCK_DEFINITION=block_definition, UNKNOWN=unknown |
-| DwgCoordinateSystem | WCS=wcs, OCS=ocs, UNKNOWN=unknown |
-| DwgAngleUnit | RADIANS=radians |
-| DwgDrawingUnitStatus | SPECIFIED=specified, UNSPECIFIED=unspecified, UNKNOWN=unknown |
-| DwgColorMode | ACI=aci, TRUE_COLOR=true_color, BY_LAYER=by_layer, BY_BLOCK=by_block, UNKNOWN=unknown |
-| DwgEntityType | LINE, CIRCLE, ARC, INSERT, MINSERT, HATCH, SPLINE, LWPOLYLINE; values equal their case names |
-
-### Issues and diagnostics
-
-`DwgEntityIssueReason` values:
-`missing_value`, `invalid_value`, `duplicate_handle`, `missing_reference`, `invalid_reference`,
-`target_not_found`, `ambiguous_reference`, `wrong_target_type`, `reference_cycle`,
-`unsupported_geometry`, `unknown_color`, `incomplete_attributes`.
-
-`field` identifies an affected public field, such as `geometry.radius` or `owner`.
-`isComplete` is true exactly when `issues` is empty; several issues still describe one incomplete entity.
-
-`DwgQueryDiagnosticReason` values:
-`non_entity_records`, `non_object_records`, `unclassifiable_records`, `unknown_drawing_units`.
-
-The first three count skipped records, not missing entities. `recordCount` is a known positive integer,
-or `null` for a non-count diagnostic. Issues and diagnostics contain no raw tool output or private names.
-
-::: details Partial data and unusual source records
-
-- Handles are uppercase hexadecimal strings without `0x` or leading zeroes. Missing/invalid handles become `null`; duplicate records remain. Ambiguous targets are not chosen arbitrarily.
-- Owner identifies where an entity belongs; `block` identifies an INSERT/MINSERT target. Unknown owners retain known handles. Anonymous block names are not resolved to effective names.
-- Attributes preserve order, duplicate tags, whitespace, and numeric text. `[]` means a confirmed empty list; `null` means inapplicable or wholly unknown. Partial lists retain readable items.
-- An explicit attribute vector requires an integer `num_owned` matching its length, even with a false `has_attribs`. An empty vector without a valid count is unknown. With count 0, it stays `[]`; conflicting first/last references add `incomplete_attributes` without following those links.
-- Repeated vector references `[A,A,B]` stay `[A,A,B]` with `incomplete_attributes`. Actual linked-list cycles stop with `reference_cycle`.
-- HEADER space references must point directly to a unique BLOCK_HEADER. An entity target gives UNKNOWN / `wrong_target_type` without following it. Ordinary explicit owner chains may follow entities. When HEADER resolves an owner, an invalid direct reference adds `invalid_reference` without discarding the resolved container/layout; omitted/null references are allowed, and valid direct handles are kept without resolving their targets.
-- LINE uses WCS; CIRCLE/ARC/INSERT use OCS. ARC/INSERT angles are radians. Missing coordinates, Z, directions, or scale axes are not filled in. Partial geometry is retained; all-unavailable geometry is `null`. MINSERT retains block/attributes but has no supported geometry.
-- Radius must be positive; extrusion needs three finite components and cannot be zero. Scale accepts finite zero/negative values. ACI is not converted to RGB; RGB is a 24-bit integer and black 0 is valid. Inherited colors are valid; missing indices are not guessed as BYBLOCK. Transparency and color-book resolution are unsupported.
-:::
+`DwgEntityQueryResult` provides `entities`, `drawingUnits`, and `diagnostics`.
+An entity's `issues` describe its parsing problems; `diagnostics` describe the whole query and do not necessarily indicate failure.
+See [Understand the result](./entities#understand-the-result) for field access and interpreting issues.

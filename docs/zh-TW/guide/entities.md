@@ -107,6 +107,6 @@ foreach ($result->incomplete() as $entity) {
 座標保留原本的 WCS／OCS 脈絡，不套用 INSERT 變換；角度使用弧度。
 顏色表示儲存值或繼承方式，不是最終顯示色。匿名圖塊名稱也會原樣保留。
 
-完整欄位與 enum 見[圖元 API 參考](./api-reference#entity-queries)。
+方法簽章與篩選選項見[圖元 API 參考](./api-reference#entity-queries)。
 圖元查詢不套用三個檔案大小上限，仍會載入完整 JSON；處理大檔前請閱讀[資源與精度限制](./performance-and-security#entity-queries)。
 來源、工具或整體查詢失敗時會拋出例外，詳見[錯誤處理](./errors-and-troubleshooting#entity-queries)。
