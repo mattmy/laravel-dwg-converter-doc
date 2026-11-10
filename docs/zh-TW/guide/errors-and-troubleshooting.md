@@ -1,8 +1,11 @@
 # 錯誤與疑難排解
 
-套件提供三種例外。你可以用 `reason()` 判斷錯誤原因，並用 `context()` 查看已移除敏感資訊的診斷資料。
+用 `reason()` 判斷錯誤原因，再查閱對應的排查方式。套件例外也會透過 `context()` 提供已移除敏感資訊的診斷資料，
+供伺服器端排查使用。
 
 ## 處理失敗
+
+以下範例假設上傳檔案已通過驗證。
 
 ```php
 use Mattmy\DwgConverter\Exceptions\DwgOperationFailed;
@@ -62,19 +65,24 @@ DWG 沒有內嵌預覽時，會拋出 `DwgOperationFailed`，原因為 `thumbnai
 請查看 `$exception->getPrevious()`：如果是錯誤碼為 `JSON_ERROR_DEPTH` 的 `JsonException`，
 就代表內容過深，不一定是語法錯誤。
 
+## 輸出過大
+
+`toJson()->convert()` 或 `info()->read()` 回報 `output_too_large` 時，請同時檢查 JSON 與一般輸出上限。
+上限是以產生的完整 JSON 計算，檔案可能比原始 DWG 大得多。詳見[執行設定](./configuration#runtime-設定)。
+
 ## 圖層查詢失敗
 
 `layers_invalid` 表示工具回傳的資料不是有效的 UTF-8，或圖層紀錄格式不符。整次查詢會失敗，
 不會回傳部分資料或自動轉碼。工具成功執行但沒有回傳資料時，才會得到空 Collection。
 詳見[圖層資料查詢](./layers)。
 
-使用 `onlyOn()` 時，如果工具不支援 `--on`，會拋出 `LibreDwgUnavailable`，原因為 `unsupported_tool_capability`。
+如果工具不支援 `--on`，呼叫 `onlyOn()->read()` 會拋出 `LibreDwgUnavailable`，原因為 `unsupported_tool_capability`。
 請更新工具，或移除此選項以讀取全部圖層。
 
 ## Storage 失敗
 
-指定檔名時，請只填檔名，不要包含目錄路徑。套件會依實際輸出格式加上副檔名，或統一副檔名的大小寫。
-即使 `storeAs()` 失敗，這個結果也不能再次使用；請重新執行轉換後再儲存。
+請檢查磁碟寫入權限，並確認[目錄與檔名](./inputs-and-outputs#一次性輸出)符合規則。
+`storeAs()` 失敗後，請重新執行操作取得新的結果，再試一次。
 
 ## 暫存清理警告
 
@@ -92,4 +100,10 @@ JSON 解碼或讀取拋出的原始例外，可由 `getPrevious()` 查看；缺�
 
 單筆 `issues` 與整次 `diagnostics` 是正常回傳資料的一部分，不會自動讓查詢失敗。
 如何判讀請參考[看懂查詢結果](./entities#看懂查詢結果)。
-圖層與圖元查詢都會省略失敗診斷中的原始 stderr，避免洩漏私有名稱。
+
+## 圖面資訊 {#drawing-information}
+
+`invalid_dwg_header` 表示檔頭不足六個位元組，或不符合 `AC10` 加兩位數字的格式。
+若代碼符合格式，但沒有對應的已知版本，仍會回傳代碼，`format` 則為 `null`。
+`info_invalid` 表示無法讀取或解碼 JSON 產物，或根節點型別錯誤。產物缺失或為空時回報
+`output_missing`。查詢成功時，無法判讀的個別欄位為 `null`。詳見[讀取圖面資訊](./drawing-info)。

@@ -1,9 +1,9 @@
 # Converting to DXF
 
-`toDxf()` exports one DWG as an ASCII DXF artifact. You can keep LibreDWG's default target or request one
-of the package's approved DXF versions.
+Use `Dwg::toDxf($source)->convert()` to export a DWG as ASCII DXF. You can use LibreDWG's default target
+or choose a supported DXF version.
 
-> **Required command:** LibreDWG `dwg2dxf`. See [External tools](./external-tools#libredwg).
+> Requires LibreDWG `dwg2dxf`. See [External tools](./external-tools#libredwg).
 
 ## Use the default target
 
@@ -28,7 +28,7 @@ $dxf = Dwg::toDxf($request->file('drawing'))
 ```
 
 Supported cases are `R12`, `R14`, `R2000`, `R2004`, `R2007`, `R2010`, `R2013`, and `R2018`.
-`toVersion()` returns a new configured operation, so it does not affect later conversions.
+`toVersion()` returns a new operation with that target. The original operation keeps its settings.
 
 ## Result contract
 

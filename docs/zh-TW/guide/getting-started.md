@@ -1,7 +1,6 @@
 # 開始使用
 
-Laravel DWG Converter 讓 Laravel 應用擷取 DWG 內嵌縮圖，或將檔案輸出為 DXF、結構 JSON、PNG、
-JPEG 或 WebP，也能查詢圖層與圖元資料。只需安裝實際使用功能所需的外部命令。
+Laravel DWG Converter 可擷取 DWG 的內嵌縮圖，輸出 DXF、結構 JSON 與圖片預覽，也能讀取圖面資訊、圖層和圖元。
 
 ## 系統需求
 
@@ -13,48 +12,25 @@ JPEG 或 WebP，也能查詢圖層與圖元資料。只需安裝實際使用功�
 
 Laravel 13 需要 PHP 8.3 或更新版本。
 
-每個操作有不同的外部需求：
-
-| 操作 | 必要命令 |
-|---|---|
-| 內嵌縮圖 | `dwgbmp` |
-| DXF | `dwg2dxf` |
-| 結構 JSON | 支援 JSON 輸出的 `dwgread` |
-| 圖元資料查詢 | 支援 JSON 輸出的 `dwgread` |
-| 圖層資料查詢 | `dwglayers --flags` |
-| PNG、JPEG 或 WebP 預覽 | `dwg2dxf`、LibreOffice 7.4+ `soffice`、ImageMagick 7 `magick` |
-
-安裝前請閱讀[外部工具](./external-tools)。只有建立圖片預覽才需要 LibreOffice 與 ImageMagick。
+只讀取 [DWG 格式版本](./drawing-info)時，不需要外部命令。其他操作所需的命令請見[外部工具](./external-tools)。
 
 ## 安裝
 
-透過 Composer 安裝套件：
+使用 Composer 安裝套件。
 
 ```bash
 composer require mattmy/laravel-dwg-converter
 ```
 
-接著安裝所選操作需要的命令。LibreDWG 安裝方式請參考
-[LibreDWG 官方儲存庫](https://github.com/libredwg/libredwg)。本套件不會下載或附帶任何外部工具。
+接著安裝會用到的[外部工具](./external-tools)。
 
 ## 設定
 
-命令位於 `PATH` 時可以直接使用預設設定。若工具安裝在其他位置，請在 `.env` 填入絕對路徑：
-
-```dotenv
-LIBREDWG_DWGBMP=/opt/libredwg/bin/dwgbmp
-LIBREDWG_DWG2DXF=/opt/libredwg/bin/dwg2dxf
-LIBREDWG_DWGREAD=/opt/libredwg/bin/dwgread
-LIBREDWG_DWGLAYERS=/opt/libredwg/bin/dwglayers
-DWG_CONVERTER_LIBREOFFICE=/usr/bin/soffice
-DWG_CONVERTER_IMAGEMAGICK=/usr/local/bin/magick
-```
-
-已位於 `PATH` 的命令不必設定變數。逾時、檔案大小上限與暫存空間請參考[設定參考](./configuration)。
+命令在 `PATH` 裡就能直接使用。若要自訂命令路徑、逾時、檔案大小上限或暫存位置，請見[設定參考](./configuration)。
 
 ## 快速開始
 
-下方範例接收有效的 Laravel 上傳檔案、擷取內嵌預覽，再串流至預設 Storage 磁碟：
+將驗證過的 Laravel 上傳檔案交給套件，就能擷取內嵌預覽並存入預設的 Storage 磁碟。
 
 ```php
 use Mattmy\DwgConverter\Facades\Dwg;
@@ -63,20 +39,14 @@ $thumbnail = Dwg::thumbnail($request->file('drawing'))->extract();
 
 $path = $thumbnail->storeAs(
     path: 'drawing-thumbnails',
-    name: 'floor-plan.'.$thumbnail->extension(),
+    name: 'floor-plan',
 );
 ```
 
-副檔名依預覽內容判定，可能是 `bmp`、`png` 或 `wmf`。有效 DWG 也可能沒有內嵌預覽；若這是
-預期情況，請處理 `DwgOperationFailed`。
+套件會加上偵測到的副檔名（`bmp`、`png` 或 `wmf`）。DWG 若沒有內嵌預覽，會回報 `thumbnail_not_found`。
+詳見[擷取縮圖](./thumbnails)。
 
 ## 下一步
 
-- [安裝與驗證外部工具](./external-tools)
-- [將 DWG 轉換為 DXF](./dxf-conversion)
-- [建立圖片預覽](./image-previews)
-- [輸出結構 JSON](./structural-json)
-- [查詢圖層資料](./layers)
-- [讀取與篩選圖元資料](./entities)
-- [選擇輸入並交付輸出](./inputs-and-outputs)
-- [處理錯誤](./errors-and-troubleshooting)
+- 輸出 [DXF](./dxf-conversion)、[結構 JSON](./structural-json)或[圖片預覽](./image-previews)。
+- 讀取[圖面資訊](./drawing-info)、[圖層](./layers)或[圖元](./entities)。

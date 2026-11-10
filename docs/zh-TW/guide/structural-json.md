@@ -1,9 +1,8 @@
 # 輸出結構 JSON
 
-`toJson()` 會將 DWG 匯出為 JSON 檔案，保留 LibreDWG 原生的資料結構。
+用 `Dwg::toJson($source)->convert()` 將 DWG 輸出為 JSON 檔案，保留 LibreDWG 原生的資料結構。
 
-> **必要命令：** 支援 JSON 輸出的 LibreDWG `dwgread`。請參考
-> [外部工具](./external-tools#libredwg)。
+> 需要支援 JSON 輸出的 LibreDWG `dwgread`。詳見[外部工具](./external-tools#libredwg)。
 
 ## 輸出 JSON
 
@@ -20,11 +19,10 @@ $path = $json->storeAs('drawing-data', 'floor-plan.json', 's3');
 
 ## 資料結構的限制 {#schema-邊界}
 
-這份 JSON 保留 LibreDWG 輸出的原始結構，你可以用 `jq` 等工具檢查，或交給應用程式繼續處理。
-LibreDWG 不保證不同版本的欄位名稱都相同。若要把其中的欄位長期存進資料庫，請先定義自己的
-資料結構與版本，不要直接依賴上游欄位名稱。
+LibreDWG 的欄位名稱可能隨版本改變。若要把部分欄位存入資料庫，請對應到自己定義的欄位。
+若只需要常用的圖面屬性，可以直接[讀取圖面資訊](./drawing-info)。
 
-它不是 GeoJSON，也沒有 `usingDxfVersion()`：`dwgread` 會保留來源 DWG 版本，而且沒有 `--as`。
+輸出沿用 LibreDWG 的資料結構與來源 DWG 版本。這個操作不支援 GeoJSON 或指定 DXF 版本。
 
 ## 巢狀深度
 
@@ -34,8 +32,6 @@ LibreDWG 不保證不同版本的欄位名稱都相同。若要把其中的欄�
 
 ## 大小與記憶體
 
-結構 JSON 可能遠大於來源 DWG。預設專屬上限為 64 MiB，並與一般輸出上限取兩個啟用值中較小者。
-由於 `output()` 會將完整 JSON 載入 PHP 記憶體，應優先使用 `storeAs()`。
-
-`storeAs()` 只能避免交付時再次載入整份檔案；`convert()` 驗證時仍會讀取並解碼完整 JSON。
-即使使用 `storeAs()`，PHP 記憶體也需要預留比檔案大小更多的空間。
+結構 JSON 可能比原始 DWG 大得多。`convert()` 會讀取並解碼完整 JSON 來驗證內容，
+所以 PHP 需要預留比 JSON 檔案更大的記憶體空間。使用 `storeAs()` 可直接串流儲存，免去再載入一次的成本。
+詳見[輸出上限](./configuration#runtime-設定)。

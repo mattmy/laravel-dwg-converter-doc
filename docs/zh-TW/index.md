@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: Laravel DWG Converter
-  text: Laravel 的 DWG 轉換套件
-  tagline: 擷取 DWG 縮圖，並輸出 DXF、結構 JSON、PNG、JPEG 或 WebP。
+  text: 在 Laravel 轉換與查詢 DWG
+  tagline: 擷取縮圖、輸出 DXF、JSON 或圖片，也能讀取圖面資料。
   actions:
     - theme: brand
       text: 開始使用
@@ -19,10 +19,8 @@ features:
   - title: 轉換 DWG
     details: 輸出 DXF、結構 JSON、PNG、JPEG 或 WebP。
   - title: 為 Laravel 打造
-    details: 接受上傳、本機路徑或位元組內容，並透過 Laravel Storage 儲存或串流結果。
+    details: 產出的檔案可以存入 Laravel Storage 或直接讀取位元組。
 ---
 
-請先閱讀[系統需求與第一次轉換](/zh-TW/guide/getting-started)，或直接確認各操作需要哪些
-[外部命令](/zh-TW/guide/external-tools)。
-
-想查詢圖面資料，請參考[圖層資料查詢](/zh-TW/guide/layers)與[圖元資料查詢](/zh-TW/guide/entities)。
+想查看 DWG 的內容，可以讀取[格式版本與圖面資訊](/zh-TW/guide/drawing-info)、
+[圖層](/zh-TW/guide/layers)或[圖元](/zh-TW/guide/entities)。

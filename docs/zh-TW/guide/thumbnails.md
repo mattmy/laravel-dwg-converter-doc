@@ -1,8 +1,8 @@
 # 擷取縮圖
 
-`thumbnail()` 會擷取 DWG 已內嵌的預覽，不會渲染圖面。
+用 `Dwg::thumbnail($source)->extract()` 擷取 DWG 檔案內嵌的預覽。
 
-> **必要命令：** LibreDWG `dwgbmp`。請參考[外部工具](./external-tools#libredwg)。
+> 需要 LibreDWG `dwgbmp`。詳見[外部工具](./external-tools#libredwg)。
 
 ## 擷取內嵌預覽
 
@@ -17,17 +17,16 @@ $mimeType = $thumbnail->mimeType();
 
 副檔名與 MIME 類型依輸出內容判定，不採用 LibreDWG 產生的檔名。
 
-## 驗證邊界
+## 檢查縮圖格式 {#驗證邊界}
 
 套件會檢查 BMP、PNG、WMF 預覽的基本結構。沒有通過檢查時，會拋出 `DwgOperationFailed`，
 原因為 `thumbnail_invalid`。
 
-縮圖會原樣回傳，不會修補或重新編碼。這些只是基本格式檢查，不會完整解碼圖片，因此即使擷取成功，
-也不保證每個圖片檢視器都能開啟結果。這項功能不需要額外安裝圖片解碼工具。
+通過基本檢查後，套件會原樣回傳縮圖。部分圖片檢視器仍可能無法開啟結果。
 
 ## 儲存縮圖
 
-檔名可省略；可信的偵測副檔名會自動套用：
+檔名可以省略。`storeAs()` 會補上偵測到的副檔名。
 
 ```php
 $path = $thumbnail->storeAs(
@@ -36,8 +35,7 @@ $path = $thumbnail->storeAs(
 );
 ```
 
-呼叫 `storeAs()` 後，這個結果就不能再次使用。對同一物件再次呼叫 `output()` 或 `storeAs()`
-會拋出 `LogicException`。
+命名方式與儲存失敗後的重試方式，請見[一次性輸出](./inputs-and-outputs#一次性輸出)。
 
 ## 沒有縮圖
 

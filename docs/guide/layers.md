@@ -1,8 +1,9 @@
 # Reading layer data
 
-`Dwg::layers($source)->read()` reads DWG layer names and states. It does not edit layers or export separate layer files.
+Use `Dwg::layers($source)->read()` to read DWG layer names and check whether each layer is off, frozen,
+or locked.
 
-> **Required command:** LibreDWG `dwglayers` with `--flags` support. See [External tools](./external-tools#libredwg).
+> Requires LibreDWG `dwglayers` with `--flags` support. See [External tools](./external-tools#libredwg).
 
 ## Read and filter layers
 
@@ -50,17 +51,15 @@ you need consecutive keys.
 
 ## Sources and results
 
-Use a Laravel `UploadedFile`, a local absolute path, or `DwgBinary` as the source. See [Inputs and outputs](./inputs-and-outputs).
+See [Choose a DWG source](./inputs-and-outputs#sources) for supported inputs.
 Calling `layers()` does not read the file. Each `read()` call reads the source and runs a new query.
 
-The returned Collection is reusable, unlike a one-time `DwgOutput`. There is no need to call `output()` or
-`storeAs()`. Cleanup is attempted before returning. Cleanup failures log a `warning` and leave the data
-usable, but temporary files may remain.
+The returned Collection is ready to reuse. See [temporary cleanup warnings](./errors-and-troubleshooting#temporary-cleanup-warning)
+if temporary files remain.
 
 ## Errors and limits
 
-If the tool succeeds without returning data, the result is an empty Collection. This only means the tool
-reported an empty list; it does not guarantee that the original drawing has no layers.
+An empty Collection means the tool returned no layer data for the query.
 
 Invalid UTF-8 or malformed records throw `DwgOperationFailed` with reason `layers_invalid`. The entire query
 fails, without partial results or automatic encoding conversion. See [Errors and troubleshooting](./errors-and-troubleshooting)

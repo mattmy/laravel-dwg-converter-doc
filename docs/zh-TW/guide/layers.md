@@ -1,8 +1,8 @@
 # 圖層資料查詢
 
-`Dwg::layers($source)->read()` 讀取 DWG 的圖層名稱與狀態，不會修改圖層或產生分層檔案。
+用 `Dwg::layers($source)->read()` 讀取 DWG 的圖層名稱，並查看各圖層是否關閉、凍結或鎖定。
 
-> **必要命令：** LibreDWG `dwglayers`，需支援 `--flags`。請參考[外部工具](./external-tools#libredwg)。
+> 需要支援 `--flags` 的 LibreDWG `dwglayers`。詳見[外部工具](./external-tools#libredwg)。
 
 ## 讀取與篩選圖層
 
@@ -16,8 +16,7 @@ $total = $layers->count();
 $names = $layers->pluck('name');
 ```
 
-結果是 Laravel 的 `Collection<int, DwgLayer>`。篩選、計數與查詢名稱都使用已讀取的資料，不會重新執行工具。
-`count()` 計算的是圖層數量，不是圖元數量。
+結果是 Laravel 的 `Collection<int, DwgLayer>`。篩選、計算圖層數量或取得名稱時，都會使用已讀取的資料。
 
 ## 只讀取開啟的圖層
 
@@ -48,15 +47,14 @@ $on = Dwg::layers($source)->onlyOn()->read();
 
 ## 來源與結果
 
-支援 `UploadedFile`、本機絕對路徑與 `DwgBinary`，詳見[輸入與輸出](./inputs-and-outputs)。
+支援的輸入類型請見[選擇 DWG 來源](./inputs-and-outputs#sources)。
 `layers()` 只指定來源，呼叫 `read()` 才會讀取；每次 `read()` 都會重新查詢。
 
-取得的 Collection 可以重複使用，不是一次性的 `DwgOutput`，也不需要呼叫 `output()` 或 `storeAs()`。
-回傳前會嘗試清理暫存檔；清理失敗時會記錄 `warning`，資料仍可使用，但可能留下暫存檔。
+取得的 Collection 可以重複使用。若發現殘留的暫存檔，請見[暫存清理警告](./errors-and-troubleshooting#暫存清理警告)。
 
 ## 錯誤與限制
 
-工具成功執行但未回傳資料時，結果是空 Collection。這只表示工具回報空清單，不保證原圖沒有圖層。
+空的 Collection 表示工具沒有回傳符合查詢條件的圖層資料。
 
 若回傳資料不是有效的 UTF-8，或紀錄格式不符，會拋出 `DwgOperationFailed`，`reason()` 為
 `layers_invalid`。整次查詢會失敗，不會回傳部分資料或自動轉碼。其他錯誤見[錯誤與疑難排解](./errors-and-troubleshooting)。

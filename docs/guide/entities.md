@@ -1,8 +1,9 @@
 # Reading stored entities
 
-Read entity data, then use Laravel collections to filter and count it.
+Use `Dwg::entities($source)->read()` to read entities stored in a DWG. Use Laravel collections to filter
+by type or layer and count the matching records.
 
-> **Required command:** LibreDWG `dwgread` with JSON output. See [External tools](./external-tools#libredwg).
+> Requires LibreDWG `dwgread` with JSON output support. See [External tools](./external-tools#libredwg).
 
 ## Read entities
 
@@ -21,7 +22,7 @@ foreach ($lines as $line) {
 }
 ```
 
-You can also pass an `UploadedFile` or `DwgBinary`; see [Inputs and outputs](./inputs-and-outputs).
+See [Choose a DWG source](./inputs-and-outputs#sources) for supported inputs.
 Each `read()` runs a new query. Once returned, the data can be reused without calling `output()` or `storeAs()`.
 
 ## Read selected layers
@@ -41,9 +42,8 @@ Names match exactly, including case and spaces. Multiple names select either lay
 `onlyLayers([])` selects nothing; entities whose layer name cannot be resolved also do not match.
 Without `onlyLayers()`, all reported entities are read.
 
-Each `onlyLayers()` returns a new operation; calling it again replaces the selection.
-It skips detailed parsing of excluded entities, but still generates and decodes the full JSON.
-It does not promise a fixed speedup or memory saving. Related attributes on other layers remain available.
+Each `onlyLayers()` returns a new operation with the supplied selection. The query still decodes the full JSON
+and can read related attributes on other layers. It skips detailed parsing for excluded entities.
 
 ## Filter and count
 
@@ -109,6 +109,6 @@ Coordinates keep their original WCS/OCS context; INSERT transforms are not appli
 Colors describe stored values or inheritance, not the final display color. Anonymous block names are kept as supplied.
 
 For method signatures and filter options, see [Entity API reference](./api-reference#entity-queries).
-Entity queries do not apply the three configured byte limits and still load the full JSON;
-read [entity query resources and precision](./performance-and-security#entity-queries) before processing large files.
+The three configured byte limits do not apply to entity queries. See
+[entity query resources and precision](./performance-and-security#entity-queries).
 Source, tool, or whole-query failures throw exceptions; see [Errors](./errors-and-troubleshooting#entity-queries).

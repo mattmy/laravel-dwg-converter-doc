@@ -1,10 +1,17 @@
 # 輸入與輸出
 
-所有操作都接受相同的三種來源。轉換與縮圖擷取回傳一次性的 `DwgOutput`；圖層與圖元查詢則回傳可重複使用的資料。
+本頁說明如何把 DWG 交給套件，以及如何使用結果。產出的檔案可以存入 Laravel Storage 或直接讀取位元組。
+查詢則會回傳可直接使用的資料。
 
-## 上傳檔案
+## 選擇 DWG 來源 {#sources}
 
-直接傳入有效的 Laravel `UploadedFile`：
+所有操作都接受上傳檔案（`UploadedFile`）、本機絕對路徑，或用 `DwgBinary` 包裝的 DWG 位元組內容。
+`convert()`、`extract()` 和 `read()` 會使用暫存副本。`Dwg::version()` 會直接讀取來源檔頭。
+這些操作都會保留原始內容。
+
+### 上傳檔案
+
+直接傳入有效的 Laravel `UploadedFile`。
 
 ```php
 use Mattmy\DwgConverter\Facades\Dwg;
@@ -16,19 +23,19 @@ $result = Dwg::toDxf($request->file('drawing'))->convert();
 呼叫前請先驗證欄位確實有檔案：`$request->file('drawing')` 可能回傳 `null`，而套件不接受
 `null` 作為來源。
 
-## 本機絕對路徑 {#local-absolute-paths}
+### 本機絕對路徑 {#local-absolute-paths}
 
-直接傳入的字串一律視為本機絕對路徑：
+直接傳入的字串一律視為本機絕對路徑。
 
 ```php
-$result = Dwg::toJson(storage_path('app/private/floor-plan.dwg'))->convert();
+$result = Dwg::toDxf(storage_path('app/private/floor-plan.dwg'))->convert();
 ```
 
 不接受相對路徑、URL、串流包裝協定（stream wrapper）、Laravel Storage 的相對路徑或 Windows UNC 路徑。
 
-## DWG 位元組內容 {#dwg-bytes}
+### DWG 位元組內容 {#dwg-bytes}
 
-請用 `DwgBinary` 包裝原始位元組內容，避免被當成路徑：
+用 `DwgBinary` 包裝 DWG 位元組內容，讓套件能和路徑區分。
 
 ```php
 use Mattmy\DwgConverter\DwgBinary;
@@ -36,13 +43,9 @@ use Mattmy\DwgConverter\DwgBinary;
 $result = Dwg::toDxf(DwgBinary::from($bytes))->convert();
 ```
 
-呼叫 `convert()`、`extract()` 或 `read()` 時，套件才會建立來源的暫存副本。你提供的原始檔案或位元組內容都不會改變。
-
-各格式的檢查與限制，請參考[縮圖](./thumbnails#驗證邊界)與[結構 JSON](./structural-json#巢狀深度)。
-
 ## 一次性輸出
 
-每次成功的檔案操作都回傳 `DwgOutput`。
+轉換與縮圖擷取會回傳 `DwgOutput`。
 
 結果物件管理著暫存檔，請在同一個程序中使用。複製、序列化或反序列化都會拋出 `LogicException`，
 原本的結果不受影響。如果要透過佇列處理，請讓佇列工作能存取來源檔案，再在工作內執行轉換。
@@ -69,16 +72,16 @@ $bytes = $result->output();
 `..` 路徑片段。省略 `disk` 時，會使用 Laravel 預設磁碟。回傳值是相對於該磁碟的儲存路徑，並非公開網址。
 
 可省略檔名；若要指定，請只提供檔名，不要帶入目錄路徑。
-套件會保留這個名稱，再視需要加上輸出格式的副檔名；副檔名已相同時，只會統一大小寫。
-省略名稱時，本機檔案與上傳檔案會沿用去掉副檔名後的名稱。如果名稱不安全或沒有名稱
-（例如 `DwgBinary`），就使用 `converted-` 加上 16 個小寫十六進位字元。`output()` 則會將整份檔案讀入 PHP 記憶體。
+套件會保留名稱並補上輸出格式的副檔名。副檔名已相同時，只會統一大小寫。以 WebP 輸出為例，
+`plan.WEBP` 會存成 `plan.webp`，`plan.png` 會存成 `plan.png.webp`。
+省略檔名時，會沿用本機檔案或上傳檔案去掉副檔名後的名稱。若名稱不安全或來源沒有檔名（例如 `DwgBinary`），
+則使用 `converted-` 加上 16 個小寫十六進位字元。`output()` 會將整份檔案讀入 PHP 記憶體。
 
-這兩種方法都只能使用一次，即使失敗也不能重試。再次使用會拋出 `LogicException`，需要重新執行轉換
-才能再次交付。呼叫完成後，套件會嘗試清理暫存檔；沒有使用就結束生命週期的結果，也會嘗試清理。
+每個 `DwgOutput` 只能從 `storeAs()` 和 `output()` 選一個呼叫一次。即使第一次失敗，再次呼叫也會拋出
+`LogicException`。要重試，請重新執行原本的操作以取得新的結果。呼叫結束後，套件會嘗試清理暫存檔。
+未使用的結果物件銷毀時，也會嘗試清理。
 
-清理失敗時，套件會透過 Laravel 預設 logger 記錄 `warning`。已取得的結果或原始例外不受影響，
-但暫存檔可能殘留。結果使用後不會重試清理，記錄警告時發生的錯誤也不會中斷操作。
-排查方式見[暫存清理警告](./errors-and-troubleshooting#暫存清理警告)。
+若發現殘留的暫存檔，請見[暫存清理警告](./errors-and-troubleshooting#暫存清理警告)。
 
 ## 圖層查詢結果
 
@@ -88,5 +91,9 @@ $bytes = $result->output();
 ## 圖元查詢 {#entity-queries}
 
 `entities()->read()` 回傳 `DwgEntityQueryResult`，其 `entities` 是可重複篩選的 `DwgEntityCollection`。
-不需要 `output()` 或 `storeAs()`；讀取完成前就會嘗試清理暫存檔，清理失敗仍依上述警告規則處理。
 範例見[圖元資料查詢](./entities)。
+
+## 圖面資訊
+
+`version()` 立即回傳 `DwgFileVersion`，`info()->read()` 完成查詢後回傳 `DwgInfo`。
+兩種結果都可重複使用。詳見[讀取圖面資訊](./drawing-info)。

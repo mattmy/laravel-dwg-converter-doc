@@ -1,9 +1,9 @@
 # Creating image previews
 
-`toImage()` creates a trimmed, whole-model-space raster preview. It supports PNG, JPEG, and WebP, plus
-three preset export resolutions.
+Use `Dwg::toImage($source)->convert()` to render a preview of the whole model space and trim its white
+margins. Choose PNG, JPEG, or WebP and one of three preset resolutions.
 
-> **Required commands:** LibreDWG `dwg2dxf`, LibreOffice 7.4+ `soffice`, and ImageMagick 7 `magick`.
+> Requires LibreDWG `dwg2dxf`, LibreOffice 7.4+ `soffice`, and ImageMagick 7 `magick`.
 > See [External tools](./external-tools).
 
 ## Create the default PNG
@@ -42,7 +42,7 @@ option methods return a new operation, preserve the other choices, and perform n
 |---|---|---|---|
 | `ImageFormat::PNG` | `png` | `image/png` | Default |
 | `ImageFormat::JPEG` | `jpg` | `image/jpeg` | Flattened onto white and re-encoded after trimming |
-| `ImageFormat::WEBP` | `webp` | `image/webp` | Requires LibreOffice 7.4+ |
+| `ImageFormat::WEBP` | `webp` | `image/webp` | |
 
 SVG is intentionally unsupported.
 

@@ -1,8 +1,9 @@
 # 圖元資料查詢
 
-讀取圖元資料後，就能用 Laravel 集合篩選與計數。
+用 `Dwg::entities($source)->read()` 讀取 DWG 中儲存的圖元。取得結果後，可用 Laravel 集合依類型或圖層篩選，
+並計算符合條件的筆數。
 
-> **必要命令：** 支援 JSON 輸出的 LibreDWG `dwgread`。請參考[外部工具](./external-tools#libredwg)。
+> 需要支援 JSON 輸出的 LibreDWG `dwgread`。詳見[外部工具](./external-tools#libredwg)。
 
 ## 讀取圖元
 
@@ -21,7 +22,7 @@ foreach ($lines as $line) {
 }
 ```
 
-也可以傳入 `UploadedFile` 或 `DwgBinary`，詳見[輸入與輸出](./inputs-and-outputs)。
+支援的輸入類型請見[選擇 DWG 來源](./inputs-and-outputs#sources)。
 每次 `read()` 都會重新查詢；取得結果後可重複使用，不需要呼叫 `output()` 或 `storeAs()`。
 
 ## 只讀取指定圖層
@@ -40,9 +41,8 @@ $result = Dwg::entities($source)->onlyLayers(['牆面', '門窗'])->read();
 名稱必須完全相同，包含大小寫與空白。指定多個名稱表示「任一圖層符合即可」。
 `onlyLayers([])` 會選零筆；無法解析所屬圖層名稱的圖元也不會選入。不呼叫 `onlyLayers()` 才會讀取全部圖元。
 
-每次 `onlyLayers()` 都回傳新操作，再次呼叫會取代原條件。
-它會省下未選圖元的詳細解析，但仍須產生、讀取及解碼完整 JSON，不保證固定的加速或記憶體節省比例。
-所選圖元仍可取得其他圖層上的關聯屬性。
+每次呼叫 `onlyLayers()` 都會回傳套用這次條件的新操作。查詢仍會解碼完整 JSON，也能讀取其他圖層上的關聯屬性。
+只有選入的圖元會進一步解析。
 
 ## 篩選與計數
 
@@ -80,7 +80,7 @@ $byLayer = $result->entities->groupBy('layer.name');
 - `diagnostics`：整次查詢的資訊，例如略過紀錄數或無法判定的圖面單位。篩選後不會重算；
   即使使用 `onlyLayers()`，仍描述整份來源。
 
-目前提供 **LINE、CIRCLE、ARC、INSERT** 的幾何資料。其他可辨識類型仍會保留共同資料，
+套件提供 **LINE、CIRCLE、ARC、INSERT** 的幾何資料。其他可辨識類型仍會保留共同資料，
 但 `geometry = null`，並記錄問題。無法讀取的值會保留為未知，其他可用資料不會一起丟掉。
 `null` 也可能表示欄位不適用，不能只看它就判定錯誤，請搭配 `issues`。
 
@@ -100,7 +100,7 @@ foreach ($result->incomplete() as $entity) {
 
 ## 筆數代表什麼
 
-筆數包含模型空間、配置與圖塊定義中的儲存紀錄，也包含隱藏圖元及關閉／凍結圖層。
+筆數包含模型空間、配置空間與圖塊定義中儲存的圖元。隱藏圖元以及關閉或凍結圖層上的圖元也會計入。
 同一圖塊插入十次，不會將定義內的圖元複製十份；MINSERT 不按行列展開，也不載入外部參考。
 因此 `count()` 不是畫面上的實例數，也不能直接當成門窗數量。
 
@@ -108,5 +108,5 @@ foreach ($result->incomplete() as $entity) {
 顏色表示儲存值或繼承方式，不是最終顯示色。匿名圖塊名稱也會原樣保留。
 
 方法簽章與篩選選項見[圖元 API 參考](./api-reference#entity-queries)。
-圖元查詢不套用三個檔案大小上限，仍會載入完整 JSON；處理大檔前請閱讀[資源與精度限制](./performance-and-security#entity-queries)。
+圖元查詢不套用三個檔案大小上限。詳見[資源與精度限制](./performance-and-security#entity-queries)。
 來源、工具或整體查詢失敗時會拋出例外，詳見[錯誤處理](./errors-and-troubleshooting#entity-queries)。

@@ -1,9 +1,11 @@
 # Errors and troubleshooting
 
-The package exposes three exception types. Each supplies a stable `reason()` and sanitized scalar `context()`
-for application handling and diagnostics.
+Use `reason()` to identify a failure and find the corresponding troubleshooting steps.
+Each package exception also provides a sanitized `context()` for server-side diagnostics.
 
 ## Handle failures
+
+This example assumes the upload has been validated.
 
 ```php
 use Mattmy\DwgConverter\Exceptions\DwgOperationFailed;
@@ -66,20 +68,25 @@ does not repair it. See [thumbnail validation](./thumbnails#validation-boundary)
 Check `$exception->getPrevious()`: if it is a `JsonException` with code `JSON_ERROR_DEPTH`, the JSON was too
 deeply nested. That does not necessarily mean its syntax was wrong.
 
+## Output too large
+
+For `output_too_large` from `toJson()->convert()` or `info()->read()`, check both JSON and general output
+limits. The limit applies to the full generated JSON, which can be much larger than the DWG.
+See [Runtime settings](./configuration#runtime-settings).
+
 ## Layer query failure
 
 `layers_invalid` means the tool returned invalid UTF-8 or malformed layer records. The entire query fails,
 without partial results or automatic encoding conversion. An empty Collection is returned only when the
 tool succeeds without returning data. See [Reading layer data](./layers).
 
-If the tool lacks `--on`, `onlyOn()` throws `LibreDwgUnavailable` with reason `unsupported_tool_capability`.
+If the tool lacks `--on`, `onlyOn()->read()` throws `LibreDwgUnavailable` with reason `unsupported_tool_capability`.
 Update the tool or remove this option to read all layers.
 
 ## Storage failure
 
-An explicit filename must be a safe basename. The package appends or normalizes the trusted output extension.
-A failed `storeAs()` still consumes the output and attempts temporary cleanup; run the conversion again
-before retrying delivery.
+Check the disk permissions and the [directory and filename rules](./inputs-and-outputs#one-time-output).
+If `storeAs()` fails, rerun the operation to get a fresh output before trying to save again.
 
 ## Temporary cleanup warning
 
@@ -99,4 +106,12 @@ Use `getPrevious()` to inspect an original JSON decoding or read exception. Miss
 
 Local `issues` and query `diagnostics` are part of a normal result, not automatic query failures.
 See [Understand the result](./entities#understand-the-result).
-Layer and entity queries omit raw stderr from failure context to avoid exposing private names.
+
+## Drawing information {#drawing-information}
+
+`invalid_dwg_header` means the header is shorter than six bytes or does not match `AC10` followed by two
+digits. A code that matches this pattern but has no known format is returned with `format = null`.
+`info_invalid` indicates that the JSON artifact could not be read or decoded, or its root was not an object.
+Missing or empty artifacts use `output_missing`. An unavailable metadata field in a successful result is
+`null`.
+See [Reading drawing information](./drawing-info).

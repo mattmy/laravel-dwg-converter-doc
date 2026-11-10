@@ -1,10 +1,10 @@
 # 建立圖片預覽
 
-`toImage()` 會為整個模型空間（model space）建立點陣預覽，並移除外圍白邊。支援 PNG、JPEG、WebP 與三種
-預設輸出解析度。
+用 `Dwg::toImage($source)->convert()` 建立整個模型空間（model space）的圖片預覽，並裁掉外圍白邊。
+格式可選 PNG、JPEG 或 WebP，解析度有三種預設值。
 
-> **必要命令：** LibreDWG `dwg2dxf`、LibreOffice 7.4+ `soffice`、ImageMagick 7 `magick`。
-> 請參考[外部工具](./external-tools)。
+> 需要 LibreDWG `dwg2dxf`、LibreOffice 7.4+ `soffice` 與 ImageMagick 7 `magick`。
+> 詳見[外部工具](./external-tools)。
 
 ## 建立預設 PNG
 
@@ -41,7 +41,7 @@ $image = Dwg::toImage($request->file('drawing'))
 |---|---|---|---|
 | `ImageFormat::PNG` | `png` | `image/png` | 預設 |
 | `ImageFormat::JPEG` | `jpg` | `image/jpeg` | 裁切後以白底重新編碼 |
-| `ImageFormat::WEBP` | `webp` | `image/webp` | 需要 LibreOffice 7.4+ |
+| `ImageFormat::WEBP` | `webp` | `image/webp` | |
 
 本套件不支援 SVG。
 
@@ -53,9 +53,9 @@ $image = Dwg::toImage($request->file('drawing'))
 | `ImageResolution::MEDIUM` | 2048 × 2896 |
 | `ImageResolution::LOW` | 1024 × 1448 |
 
-這些尺寸是移除外圍白邊前的畫布大小。最終尺寸取決於圖面內容；解析度選項不會調整壓縮品質。
+表中的尺寸是裁掉白邊前的畫布大小。實際輸出尺寸取決於圖面內容。解析度選項不會調整壓縮品質。
 
 ## 輸出限制
 
-套件會盡力產生整個模型空間的預覽，但不會將多張圖拆開輸出，也不保證圖紙空間（paper space）或
-視埠（viewport）的呈現與原圖一致。不會補齊缺少的字型或外部參考（xref），也不保證與 AutoCAD 產物完全相同。
+每次轉換會輸出一張整個模型空間的預覽。缺少的字型或外部參考（xref）不會補上，配置空間（paper space）
+和視埠（viewport）的呈現也可能與 AutoCAD 不同。

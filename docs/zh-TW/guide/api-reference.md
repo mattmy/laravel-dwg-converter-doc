@@ -1,6 +1,6 @@
 # API 參考
 
-本頁列出應用程式可直接使用的 API。操作細節與安裝方式請閱讀對應指南。
+本頁列出公開方法的參數、回傳型別與選項。使用範例與工具需求請見各操作指南。
 
 ## Facade 操作 {#facade-operations}
 
@@ -11,9 +11,21 @@ Dwg::toJson(UploadedFile|string|DwgBinary $source): JsonConversion
 Dwg::toImage(UploadedFile|string|DwgBinary $source): ImageConversion
 Dwg::layers(UploadedFile|string|DwgBinary $source): LayerReading
 Dwg::entities(UploadedFile|string|DwgBinary $source): EntityReading
+Dwg::version(UploadedFile|string|DwgBinary $source): DwgFileVersion
+Dwg::info(UploadedFile|string|DwgBinary $source): InfoReading
 ```
 
-每個方法只指定來源，不會讀寫檔案或執行轉換，並回傳新的操作物件。請參考[輸入與輸出](./inputs-and-outputs)。
+`version()` 立即讀取檔頭。其他方法只綁定來源並回傳新的操作物件，綁定時沒有 I/O。
+請參考[輸入與輸出](./inputs-and-outputs)。
+
+## 圖面資訊 {#drawing-information}
+
+```php
+InfoReading::read(): DwgInfo
+```
+
+`DwgFileVersion` 提供 `code: string` 和 `format: ?string`。`DwgInfo` 包含 `version`、
+`drawingUnits`、`summary` 和 `timestamps`。請參考[讀取圖面資訊](./drawing-info)。
 
 ## ThumbnailExtraction
 
@@ -87,15 +99,10 @@ output(): string
 storeAs(string $path, ?string $name = null, ?string $disk = null): string
 ```
 
-`extension()` 與 `mimeType()` 可以重複讀取。每個結果只能選擇 `output()` 或 `storeAs()` 呼叫一次，
-即使失敗也不能重試；需要重試時，請重新執行轉換。複製、序列化或反序列化 `DwgOutput` 都會拋出
-`LogicException`。
+`extension()` 與 `mimeType()` 可以重複讀取。每個 `DwgOutput` 只能從 `storeAs()` 和 `output()` 選一個呼叫一次。
+若呼叫失敗，請重新執行原本的操作以取得新的結果。複製、序列化或反序列化 `DwgOutput` 都會拋出 `LogicException`。
 
-`storeAs()` 會保留你提供的檔名，再視需要加上輸出格式的副檔名；副檔名已相同時，只會統一大小寫。
-省略 `name` 時，本機檔案與上傳檔案會沿用去掉副檔名後的名稱。如果名稱不安全或沒有名稱
-（例如 `DwgBinary`），就使用 `converted-` 加上 16 個小寫十六進位字元。WebP 的
-`test1.webp` 維持 `test1.webp`、`test1.png` 變成 `test1.png.webp`，`test1.WEBP` 變成
-`test1.webp`。
+儲存路徑與檔名規則請見[一次性輸出](./inputs-and-outputs#一次性輸出)。
 
 ## 例外 {#exceptions}
 

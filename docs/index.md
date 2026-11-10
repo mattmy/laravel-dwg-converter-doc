@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: Laravel DWG Converter
-  text: DWG conversion for Laravel
-  tagline: Extract DWG thumbnails and export DXF, structural JSON, PNG, JPEG, or WebP.
+  text: Convert and inspect DWG in Laravel
+  tagline: Extract thumbnails, export DXF, JSON, or images, and read drawing data.
   actions:
     - theme: brand
       text: Get started
@@ -19,10 +19,8 @@ features:
   - title: Convert DWG files
     details: Export DXF, structural JSON, PNG, JPEG, or WebP.
   - title: Built for Laravel
-    details: Accept uploads, paths, or bytes and store or stream results with Laravel Storage.
+    details: Save generated files to Laravel Storage or read their bytes directly.
 ---
 
-Start with the [requirements and first conversion](/guide/getting-started), or check exactly which
-[external commands](/guide/external-tools) your operation needs.
-
-To inspect drawing data, see [Reading layer data](/guide/layers) and [Reading stored entities](/guide/entities).
+To inspect a DWG, read its [format and drawing information](/guide/drawing-info), [layers](/guide/layers), or
+[stored entities](/guide/entities).

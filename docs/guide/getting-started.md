@@ -1,8 +1,7 @@
 # Getting started
 
-Laravel DWG Converter lets a Laravel application extract a DWG's embedded thumbnail or export the file as
-DXF, structural JSON, PNG, JPEG, or WebP. You can also read layer and entity data. Install only the external
-commands needed by the features you use.
+Laravel DWG Converter extracts embedded thumbnails, exports DXF, structural JSON, and image previews, and
+reads drawing information, layers, and entities.
 
 ## Requirements
 
@@ -14,52 +13,27 @@ commands needed by the features you use.
 
 Laravel 13 requires PHP 8.3 or later.
 
-Each operation has separate external requirements:
-
-| Operation | Required commands |
-|---|---|
-| Embedded thumbnail | `dwgbmp` |
-| DXF | `dwg2dxf` |
-| Structural JSON | `dwgread` with JSON output support |
-| Entity data | `dwgread` with JSON output support |
-| Layer data | `dwglayers --flags` |
-| PNG, JPEG, or WebP preview | `dwg2dxf`, LibreOffice 7.4+ `soffice`, ImageMagick 7 `magick` |
-
-See [External tools](./external-tools) before installing them. Only image previews require LibreOffice and
-ImageMagick.
+To read just the [stored DWG format](./drawing-info), you need no external commands. For other operations,
+see the [requirements by operation](./external-tools#requirements-by-operation).
 
 ## Installation
 
-Install the package with Composer:
+Install the package with Composer.
 
 ```bash
 composer require mattmy/laravel-dwg-converter
 ```
 
-Install the commands needed by your selected operation. For LibreDWG, follow the
-[official LibreDWG repository](https://github.com/libredwg/libredwg). This package does not download or
-bundle any external tool.
+Install the [external commands](./external-tools) required by the operations you use.
 
 ## Configuration
 
-Commands on `PATH` use the default configuration. If a command lives elsewhere, set its absolute path in `.env`:
-
-```dotenv
-LIBREDWG_DWGBMP=/opt/libredwg/bin/dwgbmp
-LIBREDWG_DWG2DXF=/opt/libredwg/bin/dwg2dxf
-LIBREDWG_DWGREAD=/opt/libredwg/bin/dwgread
-LIBREDWG_DWGLAYERS=/opt/libredwg/bin/dwglayers
-DWG_CONVERTER_LIBREOFFICE=/usr/bin/soffice
-DWG_CONVERTER_IMAGEMAGICK=/usr/local/bin/magick
-```
-
-Only set variables for commands that are not already available on `PATH`. See [Configuration](./configuration)
-for timeouts, byte limits, and temporary storage.
+Commands on `PATH` work with the default settings. See [Configuration](./configuration) to set custom command
+paths, timeouts, byte limits, or temporary storage.
 
 ## Quick start
 
-This example receives a valid Laravel upload, extracts its embedded preview, and streams the result to the
-default Storage disk:
+Pass a validated Laravel upload to extract its embedded preview and save it to the default Storage disk.
 
 ```php
 use Mattmy\DwgConverter\Facades\Dwg;
@@ -68,20 +42,14 @@ $thumbnail = Dwg::thumbnail($request->file('drawing'))->extract();
 
 $path = $thumbnail->storeAs(
     path: 'drawing-thumbnails',
-    name: 'floor-plan.'.$thumbnail->extension(),
+    name: 'floor-plan',
 );
 ```
 
-The extension is discovered from the preview bytes and may be `bmp`, `png`, or `wmf`. A valid DWG can have
-no embedded preview; handle `DwgOperationFailed` when that result is expected.
+The package adds the detected extension (`bmp`, `png`, or `wmf`). A DWG without an embedded preview raises
+`thumbnail_not_found`. See [Extracting thumbnails](./thumbnails).
 
 ## Next steps
 
-- [Install and verify external tools](./external-tools)
-- [Convert a DWG to DXF](./dxf-conversion)
-- [Create an image preview](./image-previews)
-- [Export structural JSON](./structural-json)
-- [Read layer data](./layers)
-- [Read and filter entity data](./entities)
-- [Choose inputs and deliver outputs](./inputs-and-outputs)
-- [Handle errors](./errors-and-troubleshooting)
+- Export [DXF](./dxf-conversion), [structural JSON](./structural-json), or [image previews](./image-previews).
+- Read [drawing information](./drawing-info), [layers](./layers), or [entities](./entities).

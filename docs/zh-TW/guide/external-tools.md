@@ -1,7 +1,6 @@
 # 外部工具
 
-Laravel DWG Converter 會執行安裝於本機環境的命令列工具。它們不是遠端服務，也不會由套件下載或
-附帶。你只需安裝實際使用的操作所需的命令。
+先查閱各項操作所需的本機命令，再依下方說明安裝並驗證會用到的工具。
 
 ## 各操作的需求
 
@@ -10,8 +9,10 @@ Laravel DWG Converter 會執行安裝於本機環境的命令列工具。它們�
 | `Dwg::thumbnail(...)->extract()` | 內嵌 BMP、PNG 或 WMF 預覽 | LibreDWG `dwgbmp` |
 | `Dwg::toDxf(...)->convert()` | ASCII DXF | LibreDWG `dwg2dxf` |
 | `Dwg::toJson(...)->convert()` | LibreDWG 結構 JSON | 支援 JSON 輸出的 LibreDWG `dwgread` |
-| `Dwg::entities(...)->read()` | 圖元資料與診斷 | LibreDWG `dwgread`，需支援 JSON |
-| `Dwg::layers(...)->read()` | 圖層資料 Collection | LibreDWG `dwglayers --flags` |
+| `Dwg::entities(...)->read()` | 圖元資料與診斷 | 支援 JSON 輸出的 LibreDWG `dwgread` |
+| `Dwg::version(...)` | DWG 儲存格式 | 無 |
+| `Dwg::info(...)->read()` | 基本圖面資訊 | 支援 JSON 輸出的 LibreDWG `dwgread` |
+| `Dwg::layers(...)->read()` | 圖層資料 Collection | 支援 `--flags` 的 LibreDWG `dwglayers`，使用 `onlyOn()` 時也需要 `--on` |
 | `Dwg::toImage(...)->convert()` | PNG、JPEG 或 WebP 預覽 | LibreDWG `dwg2dxf`、LibreOffice 7.4+ `soffice`、ImageMagick 7 `magick` |
 
 只有建立圖片預覽才需要 LibreOffice 與 ImageMagick。
@@ -31,7 +32,7 @@ dwglayers --version
 dwglayers --help
 ```
 
-圖層查詢需要 `--flags`；使用 `onlyOn()` 時還需要 `--on`。請確認 `dwglayers --help` 有列出所需選項。
+請用 `dwglayers --help` 確認工具支援表中列出的選項。
 
 不在 `PATH` 時請設定絕對路徑：
 
@@ -134,9 +135,3 @@ DWG_CONVERTER_IMAGEMAGICK="C:/Program Files/ImageMagick-7.x.x-Q16-HDRI/magick.ex
 
 每個環境的 `magick --version` 都必須顯示 ImageMagick 7。處理不可信檔案前，也請檢查 ImageMagick
 安全政策。
-
-## 圖元查詢 {#entity-queries}
-
-`entities()->read()` 與 JSON 匯出共用 `dwgread`／`LIBREDWG_DWGREAD`，不需要其他命令。
-請確認 build 來源可追溯，且包含 LibreDWG 0.14.1 的 JSON 記憶體洩漏修補；版本只顯示 `0.14` 不足以證明已修補。
-使用方式見[圖元資料查詢](./entities)。

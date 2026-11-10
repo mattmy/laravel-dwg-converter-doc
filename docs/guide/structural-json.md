@@ -1,9 +1,8 @@
 # Exporting structural JSON
 
-`toJson()` exports LibreDWG's native structural representation of a DWG as a validated JSON artifact.
+Use `Dwg::toJson($source)->convert()` to export a DWG as a JSON file using LibreDWG's native structure.
 
-> **Required command:** LibreDWG `dwgread` with JSON output support. See
-> [External tools](./external-tools#libredwg).
+> Requires LibreDWG `dwgread` with JSON output support. See [External tools](./external-tools#libredwg).
 
 ## Export JSON
 
@@ -20,12 +19,11 @@ then validates the JSON without changing it. It does not require specific fields
 
 ## Schema boundary
 
-The JSON keeps LibreDWG's original structure. You can inspect it with tools such as `jq` or process it in
-your application, but field names may change between LibreDWG releases. If you want to save selected fields
-in a database, define your own data structure and version it instead of relying directly on upstream field names.
+LibreDWG can change field names between releases. If you store selected fields in a database, map them to
+your own schema. To read common drawing fields directly, use [Drawing information](./drawing-info).
 
-It is not GeoJSON and does not have `usingDxfVersion()`: `dwgread` preserves the source DWG version and has
-no `--as` option.
+The export uses LibreDWG's schema and preserves the source DWG version. GeoJSON and DXF version options
+are unavailable for this operation.
 
 ## Nesting depth
 
@@ -36,9 +34,6 @@ error from a syntax error.
 
 ## Size and memory
 
-Structural JSON can be much larger than its DWG source. The default dedicated limit is 64 MiB, combined with
-the general output limit by using the smaller active value. Prefer `storeAs()` because `output()` loads the
-entire JSON into PHP memory.
-
-`storeAs()` avoids loading the file again for delivery; validation during `convert()` still reads and decodes
-the entire JSON. Allow more PHP memory than the file size alone, even when using `storeAs()`.
+Structural JSON can be much larger than its source. `convert()` reads and decodes the full JSON to validate
+it, so allow more PHP memory than the file size. Use `storeAs()` to stream the result without loading it
+again for delivery. See [output limits](./configuration#runtime-settings).

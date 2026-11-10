@@ -1,7 +1,6 @@
 # External tools
 
-Laravel DWG Converter runs locally installed command-line tools. They are not remote services and are not
-downloaded or bundled by the package. Install only the commands required by the operation you use.
+Find out which local commands each operation needs and how to install and verify them.
 
 ## Requirements by operation
 
@@ -11,7 +10,9 @@ downloaded or bundled by the package. Install only the commands required by the 
 | `Dwg::toDxf(...)->convert()` | ASCII DXF | LibreDWG `dwg2dxf` |
 | `Dwg::toJson(...)->convert()` | LibreDWG structural JSON | LibreDWG `dwgread` with JSON output |
 | `Dwg::entities(...)->read()` | Entity data and diagnostics | LibreDWG `dwgread` with JSON output |
-| `Dwg::layers(...)->read()` | Layer data Collection | LibreDWG `dwglayers --flags` |
+| `Dwg::version(...)` | Stored DWG format | None |
+| `Dwg::info(...)->read()` | Basic drawing information | LibreDWG `dwgread` with JSON output |
+| `Dwg::layers(...)->read()` | Layer data Collection | LibreDWG `dwglayers` with `--flags` and, for `onlyOn()`, `--on` |
 | `Dwg::toImage(...)->convert()` | PNG, JPEG, or WebP preview | LibreDWG `dwg2dxf`, LibreOffice 7.4+ `soffice`, ImageMagick 7 `magick` |
 
 Only image previews require LibreOffice and ImageMagick.
@@ -31,7 +32,7 @@ dwglayers --version
 dwglayers --help
 ```
 
-Layer queries require `--flags`, plus `--on` when using `onlyOn()`. Check that `dwglayers --help` lists the options you need.
+Use `dwglayers --help` to verify the options listed above.
 
 If they are not on `PATH`, set their absolute paths:
 
@@ -137,9 +138,3 @@ DWG_CONVERTER_IMAGEMAGICK="C:/Program Files/ImageMagick-7.x.x-Q16-HDRI/magick.ex
 
 In every environment, `magick --version` must report ImageMagick 7. Review ImageMagick's security policy
 before processing untrusted files.
-
-## Entity queries {#entity-queries}
-
-`entities()->read()` uses the same `dwgread` / `LIBREDWG_DWGREAD` as JSON export; no additional command is needed.
-Use a traceable build containing the LibreDWG 0.14.1 JSON memory-disclosure fix; a version string of `0.14`
-alone does not prove it is patched. See [Reading stored entities](./entities).

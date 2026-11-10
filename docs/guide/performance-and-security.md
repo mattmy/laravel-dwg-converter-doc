@@ -1,7 +1,7 @@
 # Performance and security
 
-DWG parsing and image conversion execute native command-line tools on complex binary input. Treat uploads and
-all generated artifacts as untrusted.
+Use this guide to plan memory, disk space, and worker limits for large or untrusted DWG files.
+Treat uploaded DWGs and their generated files as untrusted.
 
 ## Run conversions in controlled workers
 
@@ -22,7 +22,8 @@ formats and delegates enabled in your environment.
 - Source files are copied into a private temporary workspace before a command runs.
 - `storeAs()` streams a completed result to Laravel Storage.
 - `output()` loads the complete artifact into PHP memory.
-- JSON validation reads the complete JSON artifact and JSON may be much larger than the source DWG.
+- `toJson()->convert()` and `info()->read()` load and decode the full JSON, which can be much larger than
+  the DWG. `version()` reads only the header.
 - Image conversion creates intermediate artifacts and can run up to three conversion processes.
 - Layer queries hold both tool output and a Collection in memory; `max_output_bytes` does not cap PHP memory use.
 
@@ -46,16 +47,14 @@ consumers before making compatibility or performance promises.
 
 ## Logging and privacy
 
-When temporary cleanup fails, the package tries to log one `warning` through Laravel's default logger.
-The diagnostic details exclude paths, filenames, file contents, raw exception messages, and stack traces.
-If logging is unavailable, the warning may not be saved. See [cleanup warnings](./errors-and-troubleshooting#temporary-cleanup-warning)
-for troubleshooting and how cleanup failures affect your operation.
+The [temporary cleanup warning](./errors-and-troubleshooting#temporary-cleanup-warning) excludes paths,
+filenames, file contents, raw exception messages, and stack traces.
 
 Avoid adding source bytes, complete JSON, user filenames, or server paths to application log messages.
 Public exceptions expose sanitized context, but full exception reports may include paths in previous exceptions
 or stack traces. Restrict log access and follow your data-retention policies.
 
-For layer queries, `context()` excludes layer names and raw tool output.
+Process failure context for layer, entity, and drawing information queries omits raw stderr.
 
 ## Entity queries {#entity-queries}
 

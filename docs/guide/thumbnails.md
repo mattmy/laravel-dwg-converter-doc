@@ -1,8 +1,8 @@
 # Extracting thumbnails
 
-`thumbnail()` extracts a preview already embedded in a DWG. It does not render the drawing.
+Use `Dwg::thumbnail($source)->extract()` to retrieve the preview already embedded in a DWG.
 
-> **Required command:** LibreDWG `dwgbmp`. See [External tools](./external-tools#libredwg).
+> Requires LibreDWG `dwgbmp`. See [External tools](./external-tools#libredwg).
 
 ## Extract an embedded preview
 
@@ -22,13 +22,12 @@ The extension and MIME type come from the output bytes, not the filename supplie
 The package checks the basic structure of BMP, PNG, and WMF previews. A preview that fails these checks
 throws `DwgOperationFailed` with reason `thumbnail_invalid`.
 
-The preview is returned unchanged, without repairs or re-encoding. These are basic format checks, not a full
-image decode, so a successful result is not a guarantee that every image viewer can open it. No additional
-image decoder is needed.
+The package returns the original preview bytes after these basic checks. Some image viewers may still be
+unable to open the file.
 
 ## Store the thumbnail
 
-The name is optional. The trusted detected extension is applied automatically:
+You can omit the name. `storeAs()` adds the detected extension automatically.
 
 ```php
 $path = $thumbnail->storeAs(
@@ -37,8 +36,7 @@ $path = $thumbnail->storeAs(
 );
 ```
 
-`storeAs()` consumes the result. Calling `output()` or `storeAs()` again on the same object throws
-`LogicException`.
+See [One-time output](./inputs-and-outputs#one-time-output) for filename rules and how to retry a failed save.
 
 ## No thumbnail
 
