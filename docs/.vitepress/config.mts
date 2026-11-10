@@ -4,6 +4,7 @@ const repositoryUrl = 'https://github.com/mattmy/laravel-dwg-converter'
 const pages = [
   ['Getting started', 'getting-started'],
   ['External tools', 'external-tools'],
+  ['Inputs and outputs', 'inputs-and-outputs'],
   ['Extracting thumbnails', 'thumbnails'],
   ['Converting to DXF', 'dxf-conversion'],
   ['Creating image previews', 'image-previews'],
@@ -11,7 +12,6 @@ const pages = [
   ['Reading layer data', 'layers'],
   ['Reading stored entities', 'entities'],
   ['Reading drawing information', 'drawing-info'],
-  ['Inputs and outputs', 'inputs-and-outputs'],
   ['Configuration', 'configuration'],
   ['Errors and troubleshooting', 'errors-and-troubleshooting'],
   ['Performance and security', 'performance-and-security'],
@@ -20,6 +20,7 @@ const pages = [
 const pagesZh = [
   ['開始使用', 'getting-started'],
   ['外部工具', 'external-tools'],
+  ['輸入與輸出', 'inputs-and-outputs'],
   ['擷取縮圖', 'thumbnails'],
   ['轉換為 DXF', 'dxf-conversion'],
   ['建立圖片預覽', 'image-previews'],
@@ -27,7 +28,6 @@ const pagesZh = [
   ['圖層資料查詢', 'layers'],
   ['圖元資料查詢', 'entities'],
   ['讀取圖面資訊', 'drawing-info'],
-  ['輸入與輸出', 'inputs-and-outputs'],
   ['設定參考', 'configuration'],
   ['錯誤與疑難排解', 'errors-and-troubleshooting'],
   ['效能與安全', 'performance-and-security'],
