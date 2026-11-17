@@ -15,7 +15,7 @@ $dxf = Dwg::toDxf(storage_path('app/private/floor-plan.dwg'))->convert();
 $path = $dxf->storeAs('drawings', 'floor-plan.dxf', 's3');
 ```
 
-No target flag is passed when you do not call `toVersion()`.
+Without `toVersion()`, the conversion uses LibreDWG's default target version.
 
 ## Choose a target version
 
@@ -30,7 +30,7 @@ $dxf = Dwg::toDxf($request->file('drawing'))
 Supported cases are `R12`, `R14`, `R2000`, `R2004`, `R2007`, `R2010`, `R2013`, and `R2018`.
 `toVersion()` returns a new operation with that target. The original operation keeps its settings.
 
-## Result contract
+## Output format and checks {#result-contract}
 
 The result reports extension `dxf` and MIME type `image/vnd.dxf`. The package checks for a non-empty ASCII
 DXF with the required section and end markers, but that check does not guarantee every DWG object was

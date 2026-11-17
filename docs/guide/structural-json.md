@@ -17,7 +17,7 @@ $path = $json->storeAs('drawing-data', 'floor-plan.json', 's3');
 The result has extension `json` and MIME type `application/json`. The package checks the file and its size,
 then validates the JSON without changing it. It does not require specific fields or a particular root type.
 
-## Schema boundary
+## Working with the JSON structure {#schema-boundary}
 
 LibreDWG can change field names between releases. If you store selected fields in a database, map them to
 your own schema. To read common drawing fields directly, use [Drawing information](./drawing-info).

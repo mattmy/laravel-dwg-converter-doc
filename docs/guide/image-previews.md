@@ -32,7 +32,7 @@ $image = Dwg::toImage($request->file('drawing'))
     ->convert();
 ```
 
-`usingDxfVersion()` controls only the intermediate DXF. It does not assign a version to the image. All three
+`usingDxfVersion()` controls only the intermediate DXF. All three
 option methods return a new operation, preserve the other choices, and perform no conversion until
 `convert()` is called.
 
@@ -44,7 +44,7 @@ option methods return a new operation, preserve the other choices, and perform n
 | `ImageFormat::JPEG` | `jpg` | `image/jpeg` | Flattened onto white and re-encoded after trimming |
 | `ImageFormat::WEBP` | `webp` | `image/webp` | |
 
-SVG is intentionally unsupported.
+SVG is not supported.
 
 ## Resolution presets
 
@@ -57,7 +57,7 @@ SVG is intentionally unsupported.
 These dimensions describe the canvas before white-margin trimming. Final dimensions depend on drawing
 content; the presets are not compression-quality settings.
 
-## Output limits
+## Preview limitations {#output-limits}
 
 The result is a best-effort preview of the entire model space. It does not split multiple drawings, promise
 paper-space or viewport fidelity, supply missing fonts or xrefs, or guarantee an AutoCAD-identical image.

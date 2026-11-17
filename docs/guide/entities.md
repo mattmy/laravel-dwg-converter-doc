@@ -38,11 +38,22 @@ $result = Dwg::entities($source)
 $result = Dwg::entities($source)->onlyLayers(['Walls', 'Doors'])->read();
 ```
 
-Names match exactly, including case and spaces. Multiple names select either layer, not their intersection.
-`onlyLayers([])` selects nothing; entities whose layer name cannot be resolved also do not match.
-Without `onlyLayers()`, all reported entities are read.
+Names match exactly, including case and spaces. An entity is selected if its layer matches any supplied name.
+Pass a layer query collection or an individual `DwgLayer` directly:
 
-Each `onlyLayers()` returns a new operation with the supplied selection. The query still decodes the full JSON
+```php
+$layers = Dwg::layers($source)->onlyOn()->read();
+$result = Dwg::entities($source)->onlyLayers($layers)->read();
+
+if (($layer = $layers->first()) !== null) {
+    $result = Dwg::entities($source)->onlyLayers($layer)->read();
+}
+```
+
+An empty list or collection selects nothing. When selecting by name, entities with an unresolved layer name are excluded.
+Omit `onlyLayers()` to read all reported entities.
+
+Each call returns a new operation and replaces any previous layer selection. The query still decodes the full JSON
 and can read related attributes on other layers. It skips detailed parsing for excluded entities.
 
 ## Filter and count
@@ -101,7 +112,8 @@ An empty result can be successful, and empty diagnostics do not prove that nothi
 
 ## What the count means
 
-Counts include stored records in model space, layouts, and block definitions, including hidden entities and off/frozen layers.
+Counts cover the selected stored records across model space, layouts, and block definitions. Hidden entities and
+entities on off or frozen layers are included unless excluded by your layer selection.
 A block inserted ten times does not create ten copies of its definition's entities. MINSERT rows/columns are not expanded,
 and external references are not loaded. Counts are therefore not visible-instance or door/window totals.
 

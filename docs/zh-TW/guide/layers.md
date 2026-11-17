@@ -16,7 +16,9 @@ $total = $layers->count();
 $names = $layers->pluck('name');
 ```
 
-結果是 Laravel 的 `Collection<int, DwgLayer>`。篩選、計算圖層數量或取得名稱時，都會使用已讀取的資料。
+結果是 Laravel 的 `Collection<int, DwgLayer>`。篩選、計數或取得名稱都使用已讀取的資料，不會重新查詢。
+`count()` 計算的是圖層數。若要讀取這些圖層上的圖元，可將整份集合或單一圖層傳給
+[`entities()->onlyLayers()`](./entities#只讀取指定圖層)。
 
 ## 只讀取開啟的圖層
 

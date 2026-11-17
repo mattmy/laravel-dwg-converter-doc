@@ -32,7 +32,7 @@ $image = Dwg::toImage($request->file('drawing'))
     ->convert();
 ```
 
-`usingDxfVersion()` 只控制中介 DXF，不會替圖片指定版本。三個選項方法都會回傳新操作、保留其他
+`usingDxfVersion()` 只控制中介 DXF 的版本。三個選項方法都會回傳新操作、保留其他
 選項，而且直到呼叫 `convert()` 才執行轉換。
 
 ## 格式
@@ -55,7 +55,7 @@ $image = Dwg::toImage($request->file('drawing'))
 
 表中的尺寸是裁掉白邊前的畫布大小。實際輸出尺寸取決於圖面內容。解析度選項不會調整壓縮品質。
 
-## 輸出限制
+## 預覽限制 {#輸出限制}
 
-每次轉換會輸出一張整個模型空間的預覽。缺少的字型或外部參考（xref）不會補上，配置空間（paper space）
+每次轉換會輸出一張整個模型空間的預覽，不會自動拆分多張圖。缺少的字型或外部參考（xref）不會補上，配置空間（paper space）
 和視埠（viewport）的呈現也可能與 AutoCAD 不同。

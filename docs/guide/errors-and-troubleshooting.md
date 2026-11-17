@@ -25,11 +25,8 @@ try {
 }
 ```
 
-Do not show raw diagnostic context to end users. It is bounded and path-redacted, but is intended for server
-diagnostics.
-
-That sanitization applies to `context()`. Previous exceptions and stack traces may still contain server paths;
-keep full exception reports in access-controlled server logs.
+Keep `context()` in server logs rather than displaying it to users. Its contents are sanitized, but previous
+exceptions and stack traces may still contain server paths. Restrict access to full exception reports.
 
 ## Exception categories
 

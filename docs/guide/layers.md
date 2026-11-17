@@ -19,6 +19,7 @@ $names = $layers->pluck('name');
 
 The result is a Laravel `Collection<int, DwgLayer>`. Filtering, counting, and name lookup use the data already
 read and never rerun the tool. `count()` counts layers, not entities.
+Pass the collection or an individual layer to [`entities()->onlyLayers()`](./entities#read-selected-layers) to read matching entities.
 
 ## Read only ON layers
 

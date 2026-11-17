@@ -39,9 +39,21 @@ $result = Dwg::entities($source)->onlyLayers(['牆面', '門窗'])->read();
 ```
 
 名稱必須完全相同，包含大小寫與空白。指定多個名稱表示「任一圖層符合即可」。
-`onlyLayers([])` 會選零筆；無法解析所屬圖層名稱的圖元也不會選入。不呼叫 `onlyLayers()` 才會讀取全部圖元。
+也可直接傳入圖層查詢結果，或其中一個 `DwgLayer`：
 
-每次呼叫 `onlyLayers()` 都會回傳套用這次條件的新操作。查詢仍會解碼完整 JSON，也能讀取其他圖層上的關聯屬性。
+```php
+$layers = Dwg::layers($source)->onlyOn()->read();
+$result = Dwg::entities($source)->onlyLayers($layers)->read();
+
+if (($layer = $layers->first()) !== null) {
+    $result = Dwg::entities($source)->onlyLayers($layer)->read();
+}
+```
+
+空陣列或空集合會選零筆。指定名稱時，無法解析所屬圖層名稱的圖元不會選入。
+不呼叫 `onlyLayers()` 就會讀取全部圖元。
+
+每次呼叫都會回傳新操作，並取代先前的圖層條件。查詢仍會解碼完整 JSON，也能讀取其他圖層上的關聯屬性。
 只有選入的圖元會進一步解析。
 
 ## 篩選與計數
@@ -100,7 +112,8 @@ foreach ($result->incomplete() as $entity) {
 
 ## 筆數代表什麼
 
-筆數包含模型空間、配置空間與圖塊定義中儲存的圖元。隱藏圖元以及關閉或凍結圖層上的圖元也會計入。
+筆數是這次選取到的儲存紀錄，範圍涵蓋模型空間、配置空間與圖塊定義。隱藏圖元以及關閉或凍結圖層上的
+圖元也會計入，除非已被圖層條件排除。
 同一圖塊插入十次，不會將定義內的圖元複製十份；MINSERT 不按行列展開，也不載入外部參考。
 因此 `count()` 不是畫面上的實例數，也不能直接當成門窗數量。
 

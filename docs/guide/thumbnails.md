@@ -17,7 +17,7 @@ $mimeType = $thumbnail->mimeType();
 
 The extension and MIME type come from the output bytes, not the filename supplied by LibreDWG.
 
-## Validation boundary
+## Preview validation {#validation-boundary}
 
 The package checks the basic structure of BMP, PNG, and WMF previews. A preview that fails these checks
 throws `DwgOperationFailed` with reason `thumbnail_invalid`.

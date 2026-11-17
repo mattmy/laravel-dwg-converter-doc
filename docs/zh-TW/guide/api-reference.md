@@ -81,6 +81,49 @@ read(): Collection<int, DwgLayer>
 `DwgLayer` 提供唯讀欄位：`name: string`、`isFrozen: bool`、`isOff: bool`、`isLocked: bool`。
 篩選方式與狀態說明見[圖層資料查詢](./layers)。
 
+## 圖元查詢 {#entity-queries}
+
+使用方式見[圖元資料查詢](./entities)。
+
+```php
+// EntityReading
+onlyLayers(string|DwgLayer|array|Collection $layers, string|DwgLayer ...$additionalLayers): self
+read(): DwgEntityQueryResult
+```
+
+`onlyLayers()` 接受圖層名稱、`DwgLayer`，或包含兩者的陣列與 Laravel 集合。
+陣列必須是一維且索引連續，集合則不限制索引；無效項目會拋出 `InvalidArgumentException`。
+圖層物件只以名稱比對，之後修改傳入的集合不會影響選取條件。
+
+### 篩選方法
+
+```php
+complete(): DwgEntityCollection
+incomplete(): DwgEntityCollection
+withColorMode(DwgColorMode $mode): DwgEntityCollection
+ofType(DwgEntityType|string $type): DwgEntityCollection
+onLayer(string $name): DwgEntityCollection
+withOwnerKind(DwgOwnerKind $kind): DwgEntityCollection
+referencingBlock(string $name): DwgEntityCollection
+withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
+```
+
+這些方法可從查詢結果或圖元集合呼叫，並繼續串接。每次篩選都保留索引、順序與圖元物件，
+不修改來源集合；先前取得的結果也不會隨來源更新。集合方法回傳 `static`。
+
+選項型別皆位於 `Mattmy\DwgConverter`：
+
+- `ofType()`：可用 `DwgEntityType::LINE` 等 enum，或直接傳入 `'LINE'` 等原始類型字串。
+- `withOwnerKind()`：`DwgOwnerKind::MODEL_SPACE`、`PAPER_SPACE`、`BLOCK_DEFINITION`、`UNKNOWN`。
+- `withColorMode()`：`DwgColorMode::ACI`、`TRUE_COLOR`、`BY_LAYER`、`BY_BLOCK`、`UNKNOWN`。
+- `withIssue()`：傳入 `DwgEntityIssueReason`，例如 `DwgEntityIssueReason::TARGET_NOT_FOUND`。
+
+### 查詢結果
+
+`DwgEntityQueryResult` 提供 `entities`、`drawingUnits` 與 `diagnostics`。
+各筆圖元的 `issues` 描述單筆解析問題；`diagnostics` 描述整次查詢的資訊，有內容不一定表示失敗。
+常用欄位的取值方式與問題判讀，請參考[看懂查詢結果](./entities#看懂查詢結果)。
+
 ## DwgBinary
 
 ```php
@@ -116,44 +159,3 @@ context(): array
 請參考[錯誤與疑難排解](./errors-and-troubleshooting)。
 
 版本之間的變更請參考 [Changelog](https://github.com/mattmy/laravel-dwg-converter/blob/main/CHANGELOG.md)。
-
-## 圖元查詢 {#entity-queries}
-
-使用方式見[圖元資料查詢](./entities)。
-
-```php
-// EntityReading
-onlyLayers(string|array $layers, string ...$additionalLayers): self
-read(): DwgEntityQueryResult
-```
-
-`onlyLayers()` 接受一個或多個圖層名稱，也可傳入字串清單。陣列必須是一維、連續索引的字串清單，否則拋出 `InvalidArgumentException`。
-
-### 篩選方法
-
-```php
-complete(): DwgEntityCollection
-incomplete(): DwgEntityCollection
-withColorMode(DwgColorMode $mode): DwgEntityCollection
-ofType(DwgEntityType|string $type): DwgEntityCollection
-onLayer(string $name): DwgEntityCollection
-withOwnerKind(DwgOwnerKind $kind): DwgEntityCollection
-referencingBlock(string $name): DwgEntityCollection
-withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
-```
-
-這些方法可從查詢結果或圖元集合呼叫，並繼續串接。每次篩選都保留索引、順序與圖元物件，
-不修改來源集合；先前取得的結果也不會隨來源更新。集合方法回傳 `static`。
-
-選項型別皆位於 `Mattmy\DwgConverter`：
-
-- `ofType()`：可用 `DwgEntityType::LINE` 等 enum，或直接傳入 `'LINE'` 等原始類型字串。
-- `withOwnerKind()`：`DwgOwnerKind::MODEL_SPACE`、`PAPER_SPACE`、`BLOCK_DEFINITION`、`UNKNOWN`。
-- `withColorMode()`：`DwgColorMode::ACI`、`TRUE_COLOR`、`BY_LAYER`、`BY_BLOCK`、`UNKNOWN`。
-- `withIssue()`：傳入 `DwgEntityIssueReason`，例如 `DwgEntityIssueReason::TARGET_NOT_FOUND`。
-
-### 查詢結果
-
-`DwgEntityQueryResult` 提供 `entities`、`drawingUnits` 與 `diagnostics`。
-各筆圖元的 `issues` 描述單筆解析問題；`diagnostics` 描述整次查詢的資訊，有內容不一定表示失敗。
-常用欄位的取值方式與問題判讀，請參考[看懂查詢結果](./entities#看懂查詢結果)。

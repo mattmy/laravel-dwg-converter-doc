@@ -28,7 +28,7 @@ $title = $info->summary?->title;
 $lastSavedAt = $info->timestamps?->lastSavedAt;
 ```
 
-- `version` 是這次查詢所用的 DWG 暫存副本的格式版本。
+- `version` 是 DWG 儲存時使用的格式版本。
 - `drawingUnits` 提供圖面插入單位（INSUNITS）的代碼和 `status`。已知單位為 `SPECIFIED`，
   零為 `UNSPECIFIED`，缺少或無法辨識時為 `UNKNOWN`。
 - `summary` 包含標題、主旨、作者、關鍵字、備註、超連結基底、最後儲存者、修訂編號及自訂屬性。

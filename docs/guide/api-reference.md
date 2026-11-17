@@ -84,6 +84,50 @@ read(): Collection<int, DwgLayer>
 `DwgLayer` exposes read-only fields: `name: string`, `isFrozen: bool`, `isOff: bool`, and `isLocked: bool`.
 See [Reading layer data](./layers) for filtering and state meanings.
 
+## Entity queries {#entity-queries}
+
+Start with [Reading stored entities](./entities).
+
+```php
+// EntityReading
+onlyLayers(string|DwgLayer|array|Collection $layers, string|DwgLayer ...$additionalLayers): self
+read(): DwgEntityQueryResult
+```
+
+`onlyLayers()` accepts layer names, `DwgLayer` objects, or a list or Laravel collection containing either.
+Arrays must be flat lists; collection keys are ignored. Invalid items throw `InvalidArgumentException`.
+Layer objects are matched by name, and later changes to the supplied collection do not affect the selection.
+
+### Filters
+
+```php
+complete(): DwgEntityCollection
+incomplete(): DwgEntityCollection
+withColorMode(DwgColorMode $mode): DwgEntityCollection
+ofType(DwgEntityType|string $type): DwgEntityCollection
+onLayer(string $name): DwgEntityCollection
+withOwnerKind(DwgOwnerKind $kind): DwgEntityCollection
+referencingBlock(string $name): DwgEntityCollection
+withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
+```
+
+Call these filters on the query result or entity collection and chain them to narrow the selection.
+Filters preserve keys, order, and entity objects without changing the source collection. Previously returned
+collections do not follow later changes. Collection methods return `static`.
+
+Option types are in `Mattmy\DwgConverter`:
+
+- `ofType()`: use an enum such as `DwgEntityType::LINE`, or an original type string such as `'LINE'`.
+- `withOwnerKind()`: `DwgOwnerKind::MODEL_SPACE`, `PAPER_SPACE`, `BLOCK_DEFINITION`, or `UNKNOWN`.
+- `withColorMode()`: `DwgColorMode::ACI`, `TRUE_COLOR`, `BY_LAYER`, `BY_BLOCK`, or `UNKNOWN`.
+- `withIssue()`: pass a `DwgEntityIssueReason`, such as `DwgEntityIssueReason::TARGET_NOT_FOUND`.
+
+### Query result
+
+`DwgEntityQueryResult` provides `entities`, `drawingUnits`, and `diagnostics`.
+An entity's `issues` describe its parsing problems; `diagnostics` describe the whole query and do not necessarily indicate failure.
+See [Understand the result](./entities#understand-the-result) for field access and interpreting issues.
+
 ## DwgBinary
 
 ```php
@@ -120,45 +164,3 @@ context(): array
 See [Errors and troubleshooting](./errors-and-troubleshooting).
 
 For changes between releases, see the [Changelog](https://github.com/mattmy/laravel-dwg-converter/blob/main/CHANGELOG.md).
-
-## Entity queries {#entity-queries}
-
-Start with [Reading stored entities](./entities).
-
-```php
-// EntityReading
-onlyLayers(string|array $layers, string ...$additionalLayers): self
-read(): DwgEntityQueryResult
-```
-
-`onlyLayers()` accepts one or more layer names, or a list of strings. Arrays must be flat lists with consecutive integer keys; invalid lists throw `InvalidArgumentException`.
-
-### Filters
-
-```php
-complete(): DwgEntityCollection
-incomplete(): DwgEntityCollection
-withColorMode(DwgColorMode $mode): DwgEntityCollection
-ofType(DwgEntityType|string $type): DwgEntityCollection
-onLayer(string $name): DwgEntityCollection
-withOwnerKind(DwgOwnerKind $kind): DwgEntityCollection
-referencingBlock(string $name): DwgEntityCollection
-withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
-```
-
-Call these filters on the query result or entity collection and chain them to narrow the selection.
-Filters preserve keys, order, and entity objects without changing the source collection. Previously returned
-collections do not follow later changes. Collection methods return `static`.
-
-Option types are in `Mattmy\DwgConverter`:
-
-- `ofType()`: use an enum such as `DwgEntityType::LINE`, or an original type string such as `'LINE'`.
-- `withOwnerKind()`: `DwgOwnerKind::MODEL_SPACE`, `PAPER_SPACE`, `BLOCK_DEFINITION`, or `UNKNOWN`.
-- `withColorMode()`: `DwgColorMode::ACI`, `TRUE_COLOR`, `BY_LAYER`, `BY_BLOCK`, or `UNKNOWN`.
-- `withIssue()`: pass a `DwgEntityIssueReason`, such as `DwgEntityIssueReason::TARGET_NOT_FOUND`.
-
-### Query result
-
-`DwgEntityQueryResult` provides `entities`, `drawingUnits`, and `diagnostics`.
-An entity's `issues` describe its parsing problems; `diagnostics` describe the whole query and do not necessarily indicate failure.
-See [Understand the result](./entities#understand-the-result) for field access and interpreting issues.

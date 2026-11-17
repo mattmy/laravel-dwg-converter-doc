@@ -28,7 +28,7 @@ $title = $info->summary?->title;
 $lastSavedAt = $info->timestamps?->lastSavedAt;
 ```
 
-- `version` contains the stored format of the same source snapshot used for the query.
+- `version` contains the stored DWG format.
 - `drawingUnits` exposes the insertion unit code (INSUNITS) and its `status`. Recognized units are
   `SPECIFIED`, zero is `UNSPECIFIED`, and missing or unrecognized units are `UNKNOWN`.
 - `summary` contains the title, subject, author, keywords, comments, hyperlink base, last saved by,
