@@ -8,15 +8,13 @@ Laravel DWG Converter 可擷取 DWG 的內嵌縮圖，輸出 DXF、結構 JSON �
 |---|---|
 | PHP | 8.2 或更新版本 |
 | Laravel | 12 或 13 |
-| CI 實測 | PHP 8.2 搭配 Laravel 12；PHP 8.3–8.5 搭配 Laravel 12–13，包含 PHP 8.2／Laravel 12 的最低與目前相容相依版本 |
+| CI 測試組合 | PHP 8.2 搭配 Laravel 12，以及 PHP 8.3 至 8.5 搭配 Laravel 12 或 13 |
 
-Laravel 13 需要 PHP 8.3 或更新版本。
+Laravel 13 需要 PHP 8.3 或更新版本。CI 在 PHP 8.2 搭配 Laravel 12 時，會分別測試最低與目前可用的相依版本。
 
 只讀取 [DWG 格式版本](./drawing-info)時，不需要外部命令。其他操作所需的命令請見[外部工具](./external-tools)。
 
 ## 安裝
-
-使用 Composer 安裝套件。
 
 ```bash
 composer require mattmy/laravel-dwg-converter

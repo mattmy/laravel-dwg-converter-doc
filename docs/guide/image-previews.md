@@ -32,9 +32,8 @@ $image = Dwg::toImage($request->file('drawing'))
     ->convert();
 ```
 
-`usingDxfVersion()` controls only the intermediate DXF. All three
-option methods return a new operation, preserve the other choices, and perform no conversion until
-`convert()` is called.
+`usingDxfVersion()` sets the version of the intermediate DXF. Each option method returns a new operation
+and keeps the other settings. The conversion starts when you call `convert()`.
 
 ## Formats
 

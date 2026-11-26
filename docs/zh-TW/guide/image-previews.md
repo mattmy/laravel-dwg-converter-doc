@@ -16,7 +16,7 @@ $image = Dwg::toImage(storage_path('app/private/floor-plan.dwg'))->convert();
 $path = $image->storeAs('drawing-previews', 'floor-plan.png');
 ```
 
-預設為 PNG、不指定中介 DXF 版本，解析度為 `ImageResolution::HIGH`。
+預設輸出 PNG，使用 LibreDWG 預設的中介 DXF 版本和 `ImageResolution::HIGH` 解析度。
 
 ## 選擇格式、DXF 版本與解析度
 
@@ -32,8 +32,8 @@ $image = Dwg::toImage($request->file('drawing'))
     ->convert();
 ```
 
-`usingDxfVersion()` 只控制中介 DXF 的版本。三個選項方法都會回傳新操作、保留其他
-選項，而且直到呼叫 `convert()` 才執行轉換。
+`usingDxfVersion()` 設定中介 DXF 的版本。每個選項方法都會回傳新操作，並保留其他設定。
+呼叫 `convert()` 時才開始轉換。
 
 ## 格式
 

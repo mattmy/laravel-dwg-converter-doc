@@ -1,8 +1,5 @@
 # Inputs and outputs
 
-Learn how to pass a DWG to the package and use the result. Save generated files to Laravel Storage or read
-their bytes. Queries return data you can use directly.
-
 ## Choose a DWG source {#sources}
 
 All operations accept an uploaded file (`UploadedFile`), a local absolute path, or DWG bytes wrapped in
@@ -19,9 +16,8 @@ use Mattmy\DwgConverter\Facades\Dwg;
 $result = Dwg::toDxf($request->file('drawing'))->convert();
 ```
 
-Invalid or incomplete uploads fail before an external command starts.
-Validate that the field contains a file before calling the package: `$request->file('drawing')` can return
-`null`, which is not an accepted source type.
+Validate that the field contains one file before calling the package. `$request->file('drawing')` can return
+`null` for an empty field. The package rejects invalid or incomplete uploads before starting an external tool.
 
 ### Local absolute paths
 
@@ -56,29 +52,27 @@ $extension = $result->extension();
 $mimeType = $result->mimeType();
 ```
 
-You can read this metadata more than once. Then choose one way to use the output:
+You can read this metadata more than once. Use `storeAs()` to stream the file to Laravel Storage.
 
 ```php
 $path = $result->storeAs('drawings', 'floor-plan.dxf', 's3');
 ```
 
-or:
+Use `output()` to read the full file into PHP memory.
 
 ```php
 $bytes = $result->output();
 ```
 
-`storeAs()` streams to Laravel Storage. `path` is a directory relative to the selected disk, such as
-`drawings/2026`; use `/` as the separator, or an empty string for the disk root. Absolute paths and `.` or
-`..` segments are rejected. Omit `disk` to use Laravel's default disk. The returned string is the stored
-path relative to that disk, not a public URL.
+For `storeAs()`, pass a disk-relative directory such as `drawings/2026`, or an empty string for the disk
+root. Use `/` between directory names and avoid `.` and `..` segments. Omit `disk` to use Laravel's default
+disk. The method returns the stored path relative to that disk.
 
 Its optional name must be a filename without a directory path.
 The package keeps that name and adds the output extension if needed, or normalizes its letter case if it
 already matches. For WebP output, `plan.WEBP` becomes `plan.webp` and `plan.png` becomes `plan.png.webp`.
 Without a name, local files and uploads use their filename without the extension. An unsafe or missing
 source name, including `DwgBinary`, falls back to `converted-{16 lowercase hex}`.
-`output()` reads the complete file into PHP memory.
 
 For each `DwgOutput`, choose either `storeAs()` or `output()` and call it once. A second call throws
 `LogicException` even if the first failed. Rerun the original operation to get a fresh result before retrying.

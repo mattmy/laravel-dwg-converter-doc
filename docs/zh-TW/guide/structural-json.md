@@ -19,16 +19,13 @@ $path = $json->storeAs('drawing-data', 'floor-plan.json', 's3');
 
 ## 資料結構的限制 {#schema-邊界}
 
-LibreDWG 的欄位名稱可能隨版本改變。若要把部分欄位存入資料庫，請對應到自己定義的欄位。
-若只需要常用的圖面屬性，可以直接[讀取圖面資訊](./drawing-info)。
-
-輸出沿用 LibreDWG 的資料結構與來源 DWG 版本。這個操作不支援 GeoJSON 或指定 DXF 版本。
+匯出結果保留來源 DWG 的版本。LibreDWG 的欄位名稱可能隨版本改變，要存入資料庫時，請對應到自己定義的欄位。
+只需要常用屬性時，可以直接[讀取圖面資訊](./drawing-info)。
 
 ## 巢狀深度
 
-驗證沿用 PHP 原生的巢狀深度限制（`depth = 512`）。巢狀過深時，即使語法本身正確，也會回報
-`json_invalid`；套件沒有提供提高這個限制的設定。如何區分深度與語法錯誤，請參考
-[JSON 驗證失敗](./errors-and-troubleshooting#json-驗證失敗)。
+驗證沿用 PHP 原生的巢狀深度限制（`depth = 512`）。超過上限時會回報 `json_invalid`。
+查看原始錯誤的方式見 [JSON 驗證失敗](./errors-and-troubleshooting#json-驗證失敗)。
 
 ## 大小與記憶體
 

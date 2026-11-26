@@ -19,18 +19,15 @@ then validates the JSON without changing it. It does not require specific fields
 
 ## Working with the JSON structure {#schema-boundary}
 
-LibreDWG can change field names between releases. If you store selected fields in a database, map them to
-your own schema. To read common drawing fields directly, use [Drawing information](./drawing-info).
-
-The export uses LibreDWG's schema and preserves the source DWG version. GeoJSON and DXF version options
-are unavailable for this operation.
+The export preserves the source DWG version. LibreDWG can change field names between releases, so map
+any fields you plan to store to your own schema. To read common metadata directly, use
+[Drawing information](./drawing-info).
 
 ## Nesting depth
 
-Validation uses PHP's native nesting limit (`depth = 512`). JSON that is nested too deeply fails with
-`json_invalid`, even if its syntax is otherwise correct. The package does not offer a setting to raise this limit.
-See [JSON validation failures](./errors-and-troubleshooting#json-validation-failure) to distinguish a depth
-error from a syntax error.
+Validation uses PHP's native nesting limit (`depth = 512`). JSON beyond that limit fails with
+`json_invalid`. See [JSON validation failures](./errors-and-troubleshooting#json-validation-failure)
+to check the underlying error.
 
 ## Size and memory
 

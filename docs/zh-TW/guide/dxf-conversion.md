@@ -1,7 +1,6 @@
 # 轉換為 DXF
 
-用 `Dwg::toDxf($source)->convert()` 將 DWG 輸出為 ASCII DXF。你可以沿用 LibreDWG 預設的目標版本，
-或選擇套件支援的 DXF 版本。
+用 `Dwg::toDxf($source)->convert()` 將 DWG 輸出為 ASCII DXF。
 
 > 需要 LibreDWG `dwg2dxf`。詳見[外部工具](./external-tools#libredwg)。
 

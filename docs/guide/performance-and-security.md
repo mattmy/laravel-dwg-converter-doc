@@ -1,15 +1,14 @@
 # Performance and security
 
-Use this guide to plan memory, disk space, and worker limits for large or untrusted DWG files.
 Treat uploaded DWGs and their generated files as untrusted.
 
 ## Run conversions in controlled workers
 
 Operations are synchronous. For larger files or user uploads, call them from queue workers or containers with
-explicit limits for memory, CPU, process count, writable storage, and network access. Control application
-concurrency rather than starting an unlimited number of external conversions.
+explicit limits for memory, CPU, process count, writable storage, and network access. Set a concurrency limit
+for conversion jobs.
 
-Package timeouts and byte limits are useful boundaries, but they are not an operating-system sandbox.
+Use operating-system isolation alongside the package's timeouts and byte limits.
 
 ## Keep external tools patched
 
@@ -27,7 +26,7 @@ formats and delegates enabled in your environment.
 - Image conversion creates intermediate artifacts and can run up to three conversion processes.
 - Layer queries hold both tool output and a Collection in memory; `max_output_bytes` does not cap PHP memory use.
 
-`onlyOn()` reduces returned layer data and PHP parsing work, but the tool still decodes the whole DWG; no fixed speedup is guaranteed.
+`onlyOn()` reduces layer output and PHP parsing work. LibreDWG still decodes the whole DWG.
 
 Keep positive input/output limits for untrusted sources. If limits are disabled, enforce equivalent worker
 memory and disk quotas.
@@ -64,6 +63,5 @@ The three byte limits do not apply. Use deployment controls for worker memory an
 Process timeout and PHP's native JSON depth of `512` still apply; results are not truncated to fit memory.
 Out-of-memory termination or an OS kill may prevent exceptions and temporary cleanup.
 
-Numbers come from LibreDWG's JSON. The checked writer uses `%.14f`: `1e-15` can become `0`, and
-`1.000000000000001` can become `1` before PHP receives them. The package adds no rounding and cannot detect
-or restore that upstream precision loss. Valid zero values are still retained.
+The package uses the numbers it receives from LibreDWG. A writer using `%.14f` can turn `1e-15` into `0`
+or `1.000000000000001` into `1` before PHP reads the JSON. The original precision is unavailable after export.

@@ -16,8 +16,8 @@ $total = $layers->count();
 $names = $layers->pluck('name');
 ```
 
-結果是 Laravel 的 `Collection<int, DwgLayer>`。篩選、計數或取得名稱都使用已讀取的資料，不會重新查詢。
-`count()` 計算的是圖層數。若要讀取這些圖層上的圖元，可將整份集合或單一圖層傳給
+結果是 Laravel 的 `Collection<int, DwgLayer>`，可直接用來篩選圖層、計數或取得名稱。要重新查詢來源時，再呼叫 `read()`。
+若要讀取這些圖層上的圖元，可將整份集合或單一圖層傳給
 [`entities()->onlyLayers()`](./entities#只讀取指定圖層)。
 
 ## 只讀取開啟的圖層
@@ -26,14 +26,12 @@ $names = $layers->pluck('name');
 $on = Dwg::layers($source)->onlyOn()->read();
 ```
 
-`onlyOn()` 讓工具只回傳未關閉且未凍結的圖層，鎖定圖層仍可包含；這不保證圖元實際可見。
-它會回傳新的操作物件，不影響原操作，呼叫 `read()` 才讀取來源。
+`onlyOn()` 回傳新操作，選取未關閉且未凍結的圖層，其中可以包含鎖定的圖層。
+選取條件只看圖層狀態，選到的圖層上仍可能有隱藏的圖元。
 
 此選項需要工具支援 `--on`，安裝檢查見[外部工具](./external-tools#libredwg)。
 
 ## 圖層欄位
-
-每筆 `Mattmy\DwgConverter\DwgLayer` 提供下列欄位：
 
 | 欄位 | 型別 | 說明 |
 |---|---|---|
@@ -44,21 +42,19 @@ $on = Dwg::layers($source)->onlyOn()->read();
 
 未凍結不等於開啟：`isFrozen` 為 `false` 的圖層，`isOff` 仍可能為 `true`。
 
-結果保留工具回傳的順序、重複項目，以及名稱的大小寫與空白。Collection 可以篩選或增減項目，
-但每筆圖層資料不能修改。篩選會保留原本的索引，需要連續索引時請呼叫 `values()`。
+結果保留工具回傳的順序、重複項目，以及名稱的大小寫與空白。集合可增減項目，每筆 `DwgLayer` 則是唯讀的。
+篩選會保留原有索引，需要連續索引時可呼叫 `values()`。
 
 ## 來源與結果
 
 支援的輸入類型請見[選擇 DWG 來源](./inputs-and-outputs#sources)。
-`layers()` 只指定來源，呼叫 `read()` 才會讀取；每次 `read()` 都會重新查詢。
-
-取得的 Collection 可以重複使用。若發現殘留的暫存檔，請見[暫存清理警告](./errors-and-troubleshooting#暫存清理警告)。
+呼叫 `read()` 時才會執行查詢。
 
 ## 錯誤與限制
 
 空的 Collection 表示工具沒有回傳符合查詢條件的圖層資料。
 
-若回傳資料不是有效的 UTF-8，或紀錄格式不符，會拋出 `DwgOperationFailed`，`reason()` 為
-`layers_invalid`。整次查詢會失敗，不會回傳部分資料或自動轉碼。其他錯誤見[錯誤與疑難排解](./errors-and-troubleshooting)。
+如果回傳資料含無效的 UTF-8 或紀錄格式不符，查詢會中止並拋出 `DwgOperationFailed`，原因為
+`layers_invalid`。詳見[圖層查詢失敗](./errors-and-troubleshooting#圖層查詢失敗)。
 
 查詢沿用 `timeout`、`max_input_bytes` 與 `max_output_bytes`，詳見[設定參考](./configuration#runtime-設定)。

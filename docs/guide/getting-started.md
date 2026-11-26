@@ -9,16 +9,14 @@ reads drawing information, layers, and entities.
 |---|---|
 | PHP | 8.2 or later |
 | Laravel | 12 or 13 |
-| CI tested | PHP 8.2 with Laravel 12; PHP 8.3–8.5 with Laravel 12–13, including PHP 8.2 / Laravel 12 lowest and current boundaries |
+| CI tested | PHP 8.2 with Laravel 12, and PHP 8.3 to 8.5 with Laravel 12 or 13 |
 
-Laravel 13 requires PHP 8.3 or later.
+Laravel 13 requires PHP 8.3 or later. CI tests both the lowest and current dependencies on PHP 8.2 with Laravel 12.
 
 To read just the [stored DWG format](./drawing-info), you need no external commands. For other operations,
 see the [requirements by operation](./external-tools#requirements-by-operation).
 
 ## Installation
-
-Install the package with Composer.
 
 ```bash
 composer require mattmy/laravel-dwg-converter

@@ -39,7 +39,5 @@ $path = $thumbnail->storeAs(
 
 ## 沒有縮圖
 
-有效 DWG 也可能沒有預覽。此時會拋出 `DwgOperationFailed`，`reason()` 為 `thumbnail_not_found`，
-不會回傳 `null`，也不會自動改用 `toImage()`。
-
-需要渲染整個模型空間時，請使用[圖片預覽](./image-previews)。
+DWG 若沒有內嵌預覽，會拋出 `DwgOperationFailed`，原因為 `thumbnail_not_found`。
+要渲染整個模型空間時，請使用[圖片預覽](./image-previews)。

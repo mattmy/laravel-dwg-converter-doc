@@ -1,8 +1,8 @@
 # API 參考
 
-本頁列出公開方法的參數、回傳型別與選項。使用範例與工具需求請見各操作指南。
-
 ## Facade 操作 {#facade-operations}
+
+匯入 `Mattmy\DwgConverter\Facades\Dwg` 即可呼叫這些方法。
 
 ```php
 Dwg::thumbnail(UploadedFile|string|DwgBinary $source): ThumbnailExtraction
@@ -76,8 +76,7 @@ onlyOn(): self
 read(): Collection<int, DwgLayer>
 ```
 
-`onlyOn()` 回傳新的讀取操作，只選取未關閉且未凍結的圖層；鎖定圖層仍可包含。
-`read()` 回傳 `Collection<int, DwgLayer>`，可重複使用，不需要呼叫 `output()` 或 `storeAs()`。
+`onlyOn()` 回傳新操作，選取未關閉且未凍結的圖層，其中可以包含鎖定的圖層。
 `DwgLayer` 提供唯讀欄位：`name: string`、`isFrozen: bool`、`isOff: bool`、`isLocked: bool`。
 篩選方式與狀態說明見[圖層資料查詢](./layers)。
 
@@ -91,8 +90,8 @@ onlyLayers(string|DwgLayer|array|Collection $layers, string|DwgLayer ...$additio
 read(): DwgEntityQueryResult
 ```
 
-`onlyLayers()` 接受圖層名稱、`DwgLayer`，或包含兩者的陣列與 Laravel 集合。
-陣列必須是一維且索引連續，集合則不限制索引；無效項目會拋出 `InvalidArgumentException`。
+`onlyLayers()` 接受圖層名稱、`DwgLayer`，或由這兩種值組成的清單或 Laravel 集合。
+陣列須為從索引 0 開始的平面清單。集合可使用任意鍵。無效項目會拋出 `InvalidArgumentException`。
 圖層物件只以名稱比對，之後修改傳入的集合不會影響選取條件。
 
 ### 篩選方法
@@ -108,8 +107,8 @@ referencingBlock(string $name): DwgEntityCollection
 withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
 ```
 
-這些方法可從查詢結果或圖元集合呼叫，並繼續串接。每次篩選都保留索引、順序與圖元物件，
-不修改來源集合；先前取得的結果也不會隨來源更新。集合方法回傳 `static`。
+這些方法可從查詢結果或圖元集合呼叫，也可串接使用。上方列的是查詢結果的方法簽章。
+`DwgEntityCollection` 的同名方法回傳 `static`，並保留索引、順序與圖元物件。
 
 選項型別皆位於 `Mattmy\DwgConverter`：
 

@@ -1,7 +1,5 @@
 # External tools
 
-Find out which local commands each operation needs and how to install and verify them.
-
 ## Requirements by operation
 
 | Public operation | Result | Required commands |
@@ -22,17 +20,19 @@ Only image previews require LibreOffice and ImageMagick.
 For installation, follow the [official LibreDWG repository](https://github.com/libredwg/libredwg). Use a
 maintained, security-patched build that provides the command required by your operation.
 
-Verify the commands you plan to use:
+Check the version and available options for the commands you use.
 
 ```bash
 dwgbmp --version
 dwg2dxf --version
 dwgread --version
+dwgread --help
 dwglayers --version
 dwglayers --help
 ```
 
-Use `dwglayers --help` to verify the options listed above.
+The `dwgread` help must list `-O`, `--format`, and `-o`, with `JSON` as a distinct output format.
+Check `dwglayers --help` for `--flags` and, if you use `onlyOn()`, `--on`.
 
 If they are not on `PATH`, set their absolute paths:
 
@@ -43,13 +43,11 @@ LIBREDWG_DWGREAD=/absolute/path/to/dwgread
 LIBREDWG_DWGLAYERS=/absolute/path/to/dwglayers
 ```
 
-A version string such as `0.14` does not identify its patch level. Confirm the build's provenance and security
-fixes instead of treating the abbreviated string as proof.
+Confirm which security fixes your build includes. A version string such as `0.14` omits the patch level.
 
 ## LibreOffice
 
-LibreOffice is required only by `toImage()`. Version 7.4 or later is required because image output includes
-WebP.
+`toImage()` requires LibreOffice 7.4 or later for WebP export support.
 
 ### Ubuntu and Debian
 
@@ -84,13 +82,12 @@ Point the package to the console launcher, normally:
 DWG_CONVERTER_LIBREOFFICE="C:/Program Files/LibreOffice/program/soffice.com"
 ```
 
-Use `soffice.com`, not `soffice.exe`: the GUI launcher can report success without producing headless output.
-Also configure a short absolute `temporary_directory` to avoid Windows path-length failures.
+The GUI launcher `soffice.exe` can report success without producing a file. Use a short absolute path for
+`temporary_directory` to avoid Windows path-length failures.
 
 ## ImageMagick
 
-ImageMagick is required only by `toImage()`. The package requires ImageMagick 7 and its `magick` command;
-PHP `ext-imagick` and an ImageMagick 6-only `convert` command do not satisfy this requirement.
+`toImage()` runs the ImageMagick 7 `magick` command directly. You can leave PHP's `ext-imagick` uninstalled.
 
 ### Ubuntu and Debian
 

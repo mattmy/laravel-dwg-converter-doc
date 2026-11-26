@@ -4,23 +4,17 @@
 
 ## 處理失敗
 
-以下範例假設上傳檔案已通過驗證。
+先驗證上傳欄位，再捕捉 `InvalidDwg`，把錯誤顯示在欄位旁。其他例外可交由 Laravel 的例外處理機制處理。
 
 ```php
-use Mattmy\DwgConverter\Exceptions\DwgOperationFailed;
 use Mattmy\DwgConverter\Exceptions\InvalidDwg;
-use Mattmy\DwgConverter\Exceptions\LibreDwgUnavailable;
 use Mattmy\DwgConverter\Facades\Dwg;
 
 try {
     $result = Dwg::toDxf($request->file('drawing'))->convert();
     $path = $result->storeAs('drawings');
-} catch (LibreDwgUnavailable $exception) {
-    report($exception);
 } catch (InvalidDwg $exception) {
-    return back()->withErrors(['drawing' => '無法接受這份 DWG。']);
-} catch (DwgOperationFailed $exception) {
-    report($exception);
+    return back()->withErrors(['drawing' => '無法讀取這份 DWG。']);
 }
 ```
 
@@ -35,19 +29,20 @@ try {
 | `InvalidDwg` | 上傳、路徑或檔頭無效、輸入過大、`libredwg_rejected_input` |
 | `DwgOperationFailed` | 逾時、程序執行或輸出失敗、格式無效、儲存失敗、沒有縮圖 |
 
-`libredwg_rejected_input` 代表所選 LibreDWG 命令拒絕本次來源；不代表被接受的檔案已證明安全或
-完全符合格式。
-
 ## 找不到命令 {#找不到-command}
 
 先執行該操作的[驗證命令](./external-tools)，需要時設定絕對路徑。只需排查失敗操作實際使用的命令。
 
 ## 圖片命令成功但沒有產物 {#圖片-command-成功但沒有產物}
 
-- Windows 請使用 `soffice.com`，不要使用 `soffice.exe`。
+- 在 Windows 上，請將 LibreOffice 路徑指向 `soffice.com`。
 - 將 `temporary_directory` 設為較短的絕對路徑。
 - 確認 LibreOffice 7.4+ 與 ImageMagick 7 `magick`。
 - 確認執行轉換的程序可寫入暫存資料夾。
+
+## 圖片預覽無效
+
+`image_invalid` 表示中介或最終預覽未通過格式或尺寸檢查。WebP 除了要有有效的容器標頭，也必須包含影像資料。
 
 ## 沒有內嵌縮圖
 
@@ -58,9 +53,8 @@ DWG 沒有內嵌預覽時，會拋出 `DwgOperationFailed`，原因為 `thumbnai
 
 ## JSON 驗證失敗
 
-`json_invalid` 可能是產物讀取失敗、JSON 語法有誤，也可能是巢狀深度超過 PHP 原生的 `depth = 512` 限制。
-請查看 `$exception->getPrevious()`：如果是錯誤碼為 `JSON_ERROR_DEPTH` 的 `JsonException`，
-就代表內容過深，不一定是語法錯誤。
+`json_invalid` 表示無法讀取或解碼產生的 JSON。若 `getPrevious()` 回傳錯誤碼為 `JSON_ERROR_DEPTH`
+的 `JsonException`，代表內容超出 PHP 的巢狀深度限制（`depth = 512`）。
 
 ## 輸出過大
 
@@ -69,9 +63,8 @@ DWG 沒有內嵌預覽時，會拋出 `DwgOperationFailed`，原因為 `thumbnai
 
 ## 圖層查詢失敗
 
-`layers_invalid` 表示工具回傳的資料不是有效的 UTF-8，或圖層紀錄格式不符。整次查詢會失敗，
-不會回傳部分資料或自動轉碼。工具成功執行但沒有回傳資料時，才會得到空 Collection。
-詳見[圖層資料查詢](./layers)。
+`layers_invalid` 表示工具回傳的資料含無效的 UTF-8，或圖層紀錄格式不符，導致整次查詢失敗。
+查詢成功但沒有資料時，會回傳空集合。詳見[圖層資料查詢](./layers)。
 
 如果工具不支援 `--on`，呼叫 `onlyOn()->read()` 會拋出 `LibreDwgUnavailable`，原因為 `unsupported_tool_capability`。
 請更新工具，或移除此選項以讀取全部圖層。
@@ -95,8 +88,7 @@ DWG 沒有內嵌預覽時，會拋出 `DwgOperationFailed`，原因為 `thumbnai
 根節點須為物件，`OBJECTS` 須為陣列（可以是 `[]`，不能以 `{}` 代替）；`HEADER` 可省略，缺少單位資訊時記入診斷。
 JSON 解碼或讀取拋出的原始例外，可由 `getPrevious()` 查看；缺失或空產物則為 `output_missing`。
 
-單筆 `issues` 與整次 `diagnostics` 是正常回傳資料的一部分，不會自動讓查詢失敗。
-如何判讀請參考[看懂查詢結果](./entities#看懂查詢結果)。
+如果結果包含 `issues` 或 `diagnostics`，請參考[看懂查詢結果](./entities#看懂查詢結果)。
 
 ## 圖面資訊 {#drawing-information}
 

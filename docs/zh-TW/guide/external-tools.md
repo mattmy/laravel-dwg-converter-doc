@@ -1,7 +1,5 @@
 # 外部工具
 
-先查閱各項操作所需的本機命令，再依下方說明安裝並驗證會用到的工具。
-
 ## 各操作的需求
 
 | 公開操作 | 結果 | 必要命令 |
@@ -22,17 +20,19 @@
 安裝方式請參考 [LibreDWG 官方儲存庫](https://github.com/libredwg/libredwg)。請使用仍維護、包含
 安全修補，並提供操作所需命令的版本。
 
-驗證你預計使用的命令：
+確認會用到的命令版本和選項。
 
 ```bash
 dwgbmp --version
 dwg2dxf --version
 dwgread --version
+dwgread --help
 dwglayers --version
 dwglayers --help
 ```
 
-請用 `dwglayers --help` 確認工具支援表中列出的選項。
+`dwgread` 的說明須列出 `-O`、`--format` 與 `-o`，並將 `JSON` 列為獨立的輸出格式。
+用 `dwglayers --help` 確認支援 `--flags`，有用到 `onlyOn()` 時也要確認 `--on`。
 
 不在 `PATH` 時請設定絕對路徑：
 
@@ -43,12 +43,11 @@ LIBREDWG_DWGREAD=/absolute/path/to/dwgread
 LIBREDWG_DWGLAYERS=/absolute/path/to/dwglayers
 ```
 
-`0.14` 之類的版本字串無法辨識修補版本。請確認安裝來源與安全修補，不要把簡短版本字串當成
-已包含修補的證明。
+請從安裝來源確認版本包含哪些安全修補。`0.14` 這類版本字串省略了修補版號。
 
 ## LibreOffice
 
-只有 `toImage()` 需要 LibreOffice。由於圖片輸出包含 WebP，因此需要 7.4 或更新版本。
+`toImage()` 需要 LibreOffice 7.4 或更新版本，才能支援 WebP 匯出。
 
 ### Ubuntu 與 Debian
 
@@ -82,13 +81,12 @@ RPM 壓縮檔，解壓並安裝 `RPMS` 資料夾內的 RPM，再設定產生的 
 DWG_CONVERTER_LIBREOFFICE="C:/Program Files/LibreOffice/program/soffice.com"
 ```
 
-`soffice.exe` 可能回報成功卻沒有產檔，請使用 `soffice.com`。另外請將
-`temporary_directory` 設為較短的絕對路徑，避免 Windows 路徑過長造成失敗。
+圖形介面的啟動程式 `soffice.exe` 可能回報成功卻沒有產生檔案。請將
+`temporary_directory` 設為較短的絕對路徑，以免 Windows 路徑過長。
 
 ## ImageMagick
 
-只有 `toImage()` 需要 ImageMagick。套件要求 ImageMagick 7 的 `magick` 命令；PHP
-`ext-imagick` 或只有 ImageMagick 6 `convert` 的環境並不符合需求。
+`toImage()` 會直接執行 ImageMagick 7 的 `magick` 命令，無須安裝 PHP 的 `ext-imagick`。
 
 ### Ubuntu 與 Debian
 

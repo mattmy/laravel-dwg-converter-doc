@@ -5,23 +5,18 @@ Each package exception also provides a sanitized `context()` for server-side dia
 
 ## Handle failures
 
-This example assumes the upload has been validated.
+After validating the upload, catch `InvalidDwg` to show an error on the upload field. Other exceptions
+can go to Laravel's exception handler.
 
 ```php
-use Mattmy\DwgConverter\Exceptions\DwgOperationFailed;
 use Mattmy\DwgConverter\Exceptions\InvalidDwg;
-use Mattmy\DwgConverter\Exceptions\LibreDwgUnavailable;
 use Mattmy\DwgConverter\Facades\Dwg;
 
 try {
     $result = Dwg::toDxf($request->file('drawing'))->convert();
     $path = $result->storeAs('drawings');
-} catch (LibreDwgUnavailable $exception) {
-    report($exception);
 } catch (InvalidDwg $exception) {
-    return back()->withErrors(['drawing' => 'The DWG could not be accepted.']);
-} catch (DwgOperationFailed $exception) {
-    report($exception);
+    return back()->withErrors(['drawing' => 'This DWG could not be read.']);
 }
 ```
 
@@ -36,9 +31,6 @@ exceptions and stack traces may still contain server paths. Restrict access to f
 | `InvalidDwg` | invalid upload/path/header, input too large, `libredwg_rejected_input` |
 | `DwgOperationFailed` | timeout, process/output/format/storage failure, missing thumbnail |
 
-`libredwg_rejected_input` means the selected LibreDWG command rejected this source. It does not certify files
-that were accepted as safe or fully conforming.
-
 ## Command not found
 
 Run the operation's [verification command](./external-tools), then configure its absolute path if necessary.
@@ -46,10 +38,15 @@ Only troubleshoot the commands used by the failing operation.
 
 ## Image command succeeds but no file appears
 
-- On Windows, use `soffice.com` rather than `soffice.exe`.
+- On Windows, set the LibreOffice path to `soffice.com`.
 - Use a short absolute `temporary_directory`.
 - Confirm LibreOffice 7.4+ and ImageMagick 7 `magick`.
 - Confirm the worker can write to the temporary directory.
+
+## Invalid image preview
+
+`image_invalid` means an intermediate or final preview failed the format or dimension checks.
+For WebP, the file must contain actual image data in addition to valid container headers.
 
 ## No embedded thumbnail
 
@@ -61,9 +58,9 @@ does not repair it. See [thumbnail validation](./thumbnails#validation-boundary)
 
 ## JSON validation failure
 
-`json_invalid` can mean an artifact read failure, a syntax error or too much nesting for PHP's native `depth = 512` limit.
-Check `$exception->getPrevious()`: if it is a `JsonException` with code `JSON_ERROR_DEPTH`, the JSON was too
-deeply nested. That does not necessarily mean its syntax was wrong.
+`json_invalid` means the generated JSON could not be read or decoded. If `getPrevious()` returns a
+`JsonException` with code `JSON_ERROR_DEPTH`, PHP could not decode the file within its nesting limit
+(`depth = 512`).
 
 ## Output too large
 
@@ -73,9 +70,8 @@ See [Runtime settings](./configuration#runtime-settings).
 
 ## Layer query failure
 
-`layers_invalid` means the tool returned invalid UTF-8 or malformed layer records. The entire query fails,
-without partial results or automatic encoding conversion. An empty Collection is returned only when the
-tool succeeds without returning data. See [Reading layer data](./layers).
+`layers_invalid` means the query failed because the tool returned invalid UTF-8 or malformed records.
+A successful query with no records returns an empty collection. See [Reading layer data](./layers).
 
 If the tool lacks `--on`, `onlyOn()->read()` throws `LibreDwgUnavailable` with reason `unsupported_tool_capability`.
 Update the tool or remove this option to read all layers.
@@ -101,8 +97,7 @@ structure was missing. The root must be an object and `OBJECTS` an array (`[]` i
 `HEADER` is optional; missing unit information becomes a diagnostic.
 Use `getPrevious()` to inspect an original JSON decoding or read exception. Missing or empty artifacts use `output_missing`.
 
-Local `issues` and query `diagnostics` are part of a normal result, not automatic query failures.
-See [Understand the result](./entities#understand-the-result).
+If the query returns a result with `issues` or `diagnostics`, see [Understand the result](./entities#understand-the-result).
 
 ## Drawing information {#drawing-information}
 

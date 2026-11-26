@@ -1,7 +1,6 @@
 # Converting to DXF
 
-Use `Dwg::toDxf($source)->convert()` to export a DWG as ASCII DXF. You can use LibreDWG's default target
-or choose a supported DXF version.
+Use `Dwg::toDxf($source)->convert()` to export a DWG as ASCII DXF.
 
 > Requires LibreDWG `dwg2dxf`. See [External tools](./external-tools#libredwg).
 

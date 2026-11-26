@@ -12,11 +12,11 @@ use Mattmy\DwgConverter\Facades\Dwg;
 
 $version = Dwg::version($source);
 $code = $version->code;     // 例如 'AC1032'
-$format = $version->format; // 例如 'R2018'，未知代碼為 null
+$format = $version->format; // 例如 'R2018'，無對應版本的 AC10xx 代碼為 null
 ```
 
-`version()` 最多讀取檔頭的前六個位元組，不需要外部工具。不同軟體版本可能使用相同的 DWG 格式。
-辨識出格式只表示檔頭有效，後續解碼仍可能失敗。
+`version()` 只讀檔頭的前六個位元組，無須外部工具。不同軟體版本可能使用同一種 DWG 格式。
+檔頭即使能辨識，後續解碼仍可能失敗。
 
 ## 讀取圖面屬性
 
@@ -33,8 +33,8 @@ $lastSavedAt = $info->timestamps?->lastSavedAt;
   零為 `UNSPECIFIED`，缺少或無法辨識時為 `UNKNOWN`。
 - `summary` 包含標題、主旨、作者、關鍵字、備註、超連結基底、最後儲存者、修訂編號及自訂屬性。
   讀不到摘要或個別文字為空時會得到 `null`，非空文字則原樣保留。
-- `summary->customProperties` 是依原順序排列的 `name` 與 `value` 清單，保留重複名稱。
-  明確的空清單為 `[]`，缺少清單或無法判讀時為 `null`。
+- `summary->customProperties` 依序列出 LibreDWG 回傳的 `name` 與 `value`，保留重複名稱。
+  屬性文字缺漏或為空時，該欄為 `null`。明確的空清單為 `[]`，缺少清單或無法判讀時為 `null`。
 - `timestamps` 提供 `createdAt` 和 `lastSavedAt`，格式為以 `Z` 結尾的 RFC 3339 UTC 字串，
   毫秒非零時會保留。個別時間無法取得時為 `null`，兩者都無法取得時，`timestamps` 為 `null`。
 

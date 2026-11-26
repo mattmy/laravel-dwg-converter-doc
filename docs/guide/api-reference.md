@@ -1,9 +1,8 @@
 # API reference
 
-Look up public method parameters, return types, and options. Follow each operation guide for examples and
-tool requirements.
-
 ## Facade operations
+
+Import `Mattmy\DwgConverter\Facades\Dwg` to call these methods.
 
 ```php
 Dwg::thumbnail(UploadedFile|string|DwgBinary $source): ThumbnailExtraction
@@ -79,8 +78,7 @@ onlyOn(): self
 read(): Collection<int, DwgLayer>
 ```
 
-`onlyOn()` returns a new reading operation for layers that are neither off nor frozen, including locked layers.
-`read()` returns a reusable `Collection<int, DwgLayer>` without an `output()` or `storeAs()` step.
+`onlyOn()` returns a new operation for layers that are neither off nor frozen. Locked layers can qualify.
 `DwgLayer` exposes read-only fields: `name: string`, `isFrozen: bool`, `isOff: bool`, and `isLocked: bool`.
 See [Reading layer data](./layers) for filtering and state meanings.
 
@@ -111,9 +109,8 @@ referencingBlock(string $name): DwgEntityCollection
 withIssue(DwgEntityIssueReason $reason): DwgEntityCollection
 ```
 
-Call these filters on the query result or entity collection and chain them to narrow the selection.
-Filters preserve keys, order, and entity objects without changing the source collection. Previously returned
-collections do not follow later changes. Collection methods return `static`.
+Call and chain these filters on the query result or entity collection. The signatures above are for the
+query result. On `DwgEntityCollection`, the methods return `static` and preserve keys, order, and entity objects.
 
 Option types are in `Mattmy\DwgConverter`:
 

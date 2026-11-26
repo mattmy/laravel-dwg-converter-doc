@@ -1,7 +1,6 @@
 # 設定參考
 
-本頁說明如何設定外部工具路徑、程序逾時、檔案大小上限及暫存位置。
-所需命令已在 `PATH` 時，工具路徑可沿用預設設定。
+套件預設使用 `PATH` 上的命令。要調整逾時、大小上限或暫存位置，可先發布 `config/dwg-converter.php`。
 
 ## 發布設定檔 {#發布-config}
 
@@ -22,9 +21,9 @@ php artisan vendor:publish --tag=dwg-converter-config
 
 只會檢查目前操作需要的命令。
 
-這些設定在 Laravel 中以 `dwg-converter` 為前綴，例如 `config('dwg-converter.timeout')`。
-只有工具路徑提供上表列出的環境變數；其他設定請修改發布後的設定檔。若只需設定這些環境變數，
-不必先發布設定檔。
+在 Laravel 中，設定名稱以 `dwg-converter` 為前綴，例如 `config('dwg-converter.timeout')`。
+只設定工具路徑的環境變數時，可以省略發布步驟。如果在發布的設定檔自訂 `executables`，
+請保留每個會用到的工具項目。Laravel 只會補上缺少的第一層設定。
 
 請在第一次透過 Facade 建立操作（例如呼叫 `Dwg::info($source)`）前完成設定。
 同一個 Laravel 應用程式容器會沿用轉換器首次讀取的設定。
@@ -63,12 +62,14 @@ Laravel 會用套件預設值補上省略的設定，因此刪除已發布設定
 
 ## Windows 圖片轉換
 
-使用 LibreOffice 命令列啟動程式，並設定較短的暫存絕對路徑：
+在應用程式的 `.env` 設定 `DWG_CONVERTER_LIBREOFFICE`，再到發布的設定檔將
+`temporary_directory` 設為較短的絕對路徑。
+
+```dotenv
+DWG_CONVERTER_LIBREOFFICE="C:/Program Files/LibreOffice/program/soffice.com"
+```
 
 ```php
-'executables' => [
-    'libreoffice' => 'C:/Program Files/LibreOffice/program/soffice.com',
-],
 'temporary_directory' => 'C:/dwg-tmp',
 ```
 

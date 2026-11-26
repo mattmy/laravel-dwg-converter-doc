@@ -1,7 +1,6 @@
 # Configuration
 
-Use this page to configure external tool paths, process timeouts, byte limits, and temporary storage.
-The default command paths work when the required tools are on `PATH`.
+The default settings use the commands on `PATH`. Publish `config/dwg-converter.php` to change timeouts, byte limits, or temporary storage.
 
 ## Publish the config
 
@@ -22,9 +21,10 @@ php artisan vendor:publish --tag=dwg-converter-config
 
 Only the commands required by the selected operation are checked.
 
-These settings are under `dwg-converter` in Laravel, for example `config('dwg-converter.timeout')`.
-Only executable paths have the environment variables listed above; edit the published config for other settings.
-Publishing is optional when you only need to set those environment variables.
+In Laravel, use the `dwg-converter` prefix, as in `config('dwg-converter.timeout')`.
+You can set the executable environment variables without publishing the config. If you customize
+`executables` in the published file, keep the entries for every tool you use. Laravel fills in missing
+top-level settings only.
 
 Set these values before the first facade call that creates an operation, such as `Dwg::info($source)`.
 The converter reuses those settings for the lifetime of the Laravel application container.
@@ -65,12 +65,14 @@ Keep positive limits for untrusted files. Config limits do not replace worker or
 
 ## Windows image conversion
 
-Use LibreOffice's console launcher and a short absolute temporary path:
+Set `DWG_CONVERTER_LIBREOFFICE` in your application's `.env`, then set `temporary_directory` to a
+short absolute path in the published config.
+
+```dotenv
+DWG_CONVERTER_LIBREOFFICE="C:/Program Files/LibreOffice/program/soffice.com"
+```
 
 ```php
-'executables' => [
-    'libreoffice' => 'C:/Program Files/LibreOffice/program/soffice.com',
-],
 'temporary_directory' => 'C:/dwg-tmp',
 ```
 

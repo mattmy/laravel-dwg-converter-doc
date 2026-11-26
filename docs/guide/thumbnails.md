@@ -40,7 +40,5 @@ See [One-time output](./inputs-and-outputs#one-time-output) for filename rules a
 
 ## No thumbnail
 
-A valid DWG may not contain a preview. In that case the operation throws `DwgOperationFailed` with reason
-`thumbnail_not_found`. It does not return `null` and does not fall back to `toImage()`.
-
-Use [image previews](./image-previews) when you need a rendered whole-model-space image.
+If the DWG has no embedded preview, the operation throws `DwgOperationFailed` with reason
+`thumbnail_not_found`. To render the whole model space, use [image previews](./image-previews).

@@ -1,7 +1,6 @@
 # Reading stored entities
 
-Use `Dwg::entities($source)->read()` to read entities stored in a DWG. Use Laravel collections to filter
-by type or layer and count the matching records.
+Use `Dwg::entities($source)->read()` to query stored entities. The result includes a Laravel collection of records.
 
 > Requires LibreDWG `dwgread` with JSON output support. See [External tools](./external-tools#libredwg).
 
@@ -23,7 +22,7 @@ foreach ($lines as $line) {
 ```
 
 See [Choose a DWG source](./inputs-and-outputs#sources) for supported inputs.
-Each `read()` runs a new query. Once returned, the data can be reused without calling `output()` or `storeAs()`.
+Each `read()` runs a new query. You can filter and count the returned data repeatedly.
 
 ## Read selected layers
 
@@ -50,11 +49,12 @@ if (($layer = $layers->first()) !== null) {
 }
 ```
 
-An empty list or collection selects nothing. When selecting by name, entities with an unresolved layer name are excluded.
-Omit `onlyLayers()` to read all reported entities.
+Omit `onlyLayers()` to read all reported entities. An empty list or collection selects zero records
+and still runs the query.
+With a layer selection, an entity needs a resolved layer name to match. A `DwgLayer` supplies its name only.
 
-Each call returns a new operation and replaces any previous layer selection. The query still decodes the full JSON
-and can read related attributes on other layers. It skips detailed parsing for excluded entities.
+Calling `onlyLayers()` again replaces the selection on the new operation. The query decodes the full JSON,
+then parses the selected entities in detail. Related attributes can still come from other layers.
 
 ## Filter and count
 
@@ -88,9 +88,9 @@ Keys and order are preserved; use `values()` when you need consecutive keys. Oth
 ## Understand the result
 
 - `entities`: entity records with type, handle, layer, owner, geometry, color, block, attributes, and local issues.
-- `drawingUnits`: the source unit code and whether it is specified, unspecified, or unknown. Lengths are not converted.
-- `diagnostics`: query-wide information, such as skipped records or unknown drawing units. Filtering does not recalculate it;
-  even with `onlyLayers()`, it describes the whole source.
+- `drawingUnits`: the drawing's insertion unit code (INSUNITS) and its status. Lengths stay in their source units.
+- `diagnostics`: source-wide information such as counts of skipped records or unknown drawing units.
+  The same scope applies with `onlyLayers()` and after collection filters.
 
 Geometry is available for **LINE, CIRCLE, ARC, and INSERT**. Other identifiable types remain in the collection
 with common data, `geometry = null`, and an issue. Values that cannot be read are left unknown; usable partial data is kept.
@@ -106,16 +106,16 @@ foreach ($result->incomplete() as $entity) {
 }
 ```
 
-`complete()` means the supported fields have no parsing issues, not that all CAD data was decoded.
-Diagnostics may contain normal non-entity counts; a nonempty list is not automatically a failure.
-An empty result can be successful, and empty diagnostics do not prove that nothing was missed upstream.
+`complete()` selects records with no issues in the supported fields. A successful query can return zero
+entities or include diagnostics such as a count of ordinary non-entity records. LibreDWG can omit records
+without a diagnostic.
 
 ## What the count means
 
-Counts cover the selected stored records across model space, layouts, and block definitions. Hidden entities and
-entities on off or frozen layers are included unless excluded by your layer selection.
-A block inserted ten times does not create ten copies of its definition's entities. MINSERT rows/columns are not expanded,
-and external references are not loaded. Counts are therefore not visible-instance or door/window totals.
+Counts cover the selected stored records across model space, layouts, and block definitions. With no layer
+selection, this includes hidden entities and entities on off or frozen layers. Each block definition's
+entities are counted once, regardless of how often the block is inserted. MINSERT rows and columns stay
+unexpanded, and external references are not loaded. A door or window count needs rules specific to your drawing.
 
 Coordinates keep their original WCS/OCS context; INSERT transforms are not applied. Angles are radians.
 Colors describe stored values or inheritance, not the final display color. Anonymous block names are kept as supplied.
